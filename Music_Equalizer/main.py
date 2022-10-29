@@ -9,7 +9,8 @@ dataset = st.sidebar.file_uploader(label="Uploading Signal", type = ['csv'])
 # ------------------------------------------------------------------------------------Calling Main Functions
 if dataset is not None:
     df = pd.read_csv(dataset)
-    fn.fourier_transform(df)
+    inverseFourier = fn.fourier_transform(df)
+    fn.fourier_inverse_transform(inverseFourier,df)
 
 else:
     pass
