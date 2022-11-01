@@ -3,6 +3,8 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import librosa
+import librosa.display
 import  streamlit_vertical_slider  as svs
 
 #  ----------------------------------- FOURIER TRANSFORM FUNCTION ---------------------------------------------------
@@ -70,15 +72,22 @@ def creating_sliders(names_list):
     sliders_values = []
     sliders = {}
 
-    for index, i in enumerate(names_list): # ---> [ ( 0, ('Megzawy', 100) ) , ( 1 , ('Magdy', 150) ) ]
+    for index, tuple in enumerate(names_list): # ---> [ { 0, ('Megzawy', 100) } , { 1 , ('Magdy', 150) } ]
         # st.write(index)
         # st.write(i)
-        min_value = i[1] - boundary
-        max_value = i[1] + boundary
+        min_value = tuple[1] - boundary
+        max_value = tuple[1] + boundary
         key = f'member{random.randint(0,10000000000)}'
         with columns[index]:
-            sliders[f'slidergroup{key}'] = svs.vertical_slider(key=key, default_value=i[1], step=1, min_value=min_value, max_value=max_value)
+            sliders[f'slidergroup{key}'] = svs.vertical_slider(key=key, default_value=tuple[1], step=1, min_value=min_value, max_value=max_value)
             if sliders[f'slidergroup{key}'] == None:
-                sliders[f'slidergroup{key}'] = i[1]
-            sliders_values.append((i[0], sliders[f'slidergroup{key}']))
+                sliders[f'slidergroup{key}'] = tuple[1]
+            sliders_values.append((tuple[0], sliders[f'slidergroup{key}']))
             # st.write(sliders_values)
+
+#  ----------------------------------- PLOTTING AUDIO ---------------------------------------------------------------
+def plotting(amplitude, frequency):
+    # Plotting audio Signal
+    fig = plt.figure(figsize=[10,6])
+    librosa.display.waveshow(amplitude, frequency)
+    st.pyplot(fig)
