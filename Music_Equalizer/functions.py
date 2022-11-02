@@ -6,6 +6,11 @@ import pandas as pd
 import librosa
 import librosa.display
 import streamlit_vertical_slider  as svs
+from scipy.io import wavfile as wav
+from scipy.fftpack import fft
+from scipy.fft import fft, fftfreq, fftshift
+
+
 
 #  ----------------------------------- FOURIER TRANSFORM FUNCTION ---------------------------------------------------
 def fourier_transform(df):
@@ -86,8 +91,26 @@ def creating_sliders(names_list):
             # st.write(sliders_values)
 
 #  ----------------------------------- PLOTTING AUDIO ---------------------------------------------------------------
-def plotting(amplitude, frequency):
-    # Plotting audio Signal
-    fig = plt.figure(figsize=[10,6])
-    librosa.display.waveshow(amplitude, frequency)
-    st.pyplot(fig)
+# def plotting(amplitude, frequency):
+#     # Plotting audio Signal
+#     fig = plt.figure(figsize=[10,6])
+#     librosa.display.waveshow(amplitude, frequency)
+#     st.pyplot(fig)
+#-------------------------------------- Fourier Transform on Audio ----------------------------------------------------
+def fourier_for_audio(uploaded_file):
+    sample_rate, amplitude = wav.read(uploaded_file) #kam sample fl sec fl track,amplitude l data
+    amplitude = np.frombuffer(amplitude, "int32") #str code khd mn dof3t 4 - 3 ayam search
+    fft_out = fft(amplitude)          #el fourier bt3t el amplitude eli hnshtghl beha fl equalizer
+    fft_out=np.abs(fft_out)[:len(amplitude)//2] #np.abs 3shan el rsm
+    # plt.plot(amplitude, np.abs(fft_out))
+    # plt.show() satren code mbyrsmosh haga 
+    x_axis_fourier = fftfreq(len(amplitude),(1/sample_rate))[:len(amplitude)//2] #3shan mbd2sh mn -ve
+    return x_axis_fourier,fft_out
+
+def plotting(x_axis_fourier,fft_out):
+ # Plotting audio Signal
+    figure, axis = plt.subplots()
+    plt.subplots_adjust(hspace=1)
+    axis.plot(x_axis_fourier,fft_out)
+    st.plotly_chart(figure,use_container_width=True) 
+#-------------tagroba fashla------------
