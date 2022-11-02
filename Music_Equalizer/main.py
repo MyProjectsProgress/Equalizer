@@ -4,10 +4,10 @@ import functions as fn
 import librosa
 st.set_page_config(layout="wide")
 
-# ------------------------------------------------------------------------------------ uploaded_file Browsing Button
+# ------------------------------------------------------------------------------------ Uploaded [File Browsing Button
 uploaded_file = st.file_uploader(label="Uploading Signal", type = ['csv',".wav"])
 
-# ------------------------------------------------------------------------------------Calling Main Functions
+# ------------------------------------------------------------------------------------ Calling Main Functions
 if uploaded_file is not None:
 
     # USER OPTIONS

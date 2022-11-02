@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import librosa
 import librosa.display
-import  streamlit_vertical_slider  as svs
+import streamlit_vertical_slider  as svs
 
 #  ----------------------------------- FOURIER TRANSFORM FUNCTION ---------------------------------------------------
 def fourier_transform(df):
