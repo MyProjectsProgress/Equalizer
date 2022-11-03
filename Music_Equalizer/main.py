@@ -17,19 +17,16 @@ if uploaded_file is not None:
         pass
 
     elif radio_button == "Music":
-        names_list = [('Megzawy', 100),('Magdy', 150)]
-        fn.creating_sliders(names_list)
+        pass
 
     elif radio_button == "Vowels":
-        names_list = [('Amr', 100),('Sameh', 150),]
-        fn.creating_sliders(names_list)
+        pass
 
     elif radio_button == "Arrhythima":
-        names_list = [('Mariam', 100),('Taha', 150),]
-        fn.creating_sliders(names_list)
+        pass
+
     else:
-        names_list = [('Ahmed', 100),('Youssef', 150),]
-        fn.creating_sliders(names_list)
+        pass
 
     file_name = uploaded_file.type
     file_extension = file_name[-3:]
