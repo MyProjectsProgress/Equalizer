@@ -21,7 +21,7 @@ def dataframe_fourier_transform(dataframe):
     signal_x_axis = (dataframe.iloc[:,0]).to_numpy() # dataframe x axis
 
     duration    = signal_x_axis[-1] # the last point in the x axis (number of seconds in the data frame)
-    sample_rate = len(signal_y_axis) / duration # returns number points per second
+    sample_rate = len(signal_y_axis)/duration # returns number points per second
 
     fourier_y_axis = rfft(signal_y_axis) # returns complex numbers of the y axis in the data frame
     fourier_x_axis = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
@@ -53,7 +53,7 @@ def dataframe_creating_sliders(peaks_indeces,points_per_freq,fourier_x_axis,four
     peak_frequencies = fourier_x_axis[peaks_indeces[:]]
     columns = st.columns(10)
 
-    for index,frequency in enumerate(peak_frequencies):
+    for index, frequency in enumerate(peak_frequencies):
 
         with columns[index]:
             slider_range = svs.vertical_slider(min_value=0.0, max_value=2.0, default_value=1., step=.1, key=index)
