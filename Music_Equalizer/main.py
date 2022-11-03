@@ -14,9 +14,6 @@ if uploaded_file is not None:
     radio_button = st.radio("",["Default Signal", "Music", "Vowels", "Arrhythima", "Optional"])
 
     if radio_button == "Default Signal":
-        # names_list = [('A', 100),('B', 150),('C', 75),('D', 25),('E', 150),('F', 60),('G', 86),('H', 150),('E', 150),('G', 25),('K', 99),('L', 150),
-        #                 ('M', 150),('M', 55),('N', 150)]
-        # fn.creating_sliders(names_list)
         pass
 
     elif radio_button == "Music":
@@ -36,7 +33,6 @@ if uploaded_file is not None:
 
     file_name = uploaded_file.type
     file_extension = file_name[-3:]
-
 
     if file_extension == "csv":
         df = pd.read_csv(uploaded_file)

@@ -7,7 +7,6 @@ from scipy.signal import find_peaks
 import streamlit as st
 import plotly.graph_objects as go
 
-
 SAMPLE_RATE = 44100  # Hertz
 DURATION = 5  # Seconds
 fig = go.Figure()
