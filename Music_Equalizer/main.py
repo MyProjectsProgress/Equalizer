@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 import functions as fn
-import librosa
-from scipy.io import wavfile as wav
 
 st.set_page_config(layout="wide")
 
@@ -42,17 +40,9 @@ if uploaded_file is not None:
 
     if file_extension == "csv":
         df = pd.read_csv(uploaded_file)
-        # inverseFourier, fourierTransform = fn.fourier_transform(df)
-        # fn.fourier_inverse_transform(inverseFourier,df)
-        # fn.wave_ranges(fourierTransform)
         fn.dataframe_fourier_transform(df)
     else:
-        # st.audio(uploaded_file, format='audio/ogg')         # displaying the audio player
-        # amplitude, frequency = librosa.load(uploaded_file)  # getting audio attributes which are amplitude and frequency (number of frames per second)
-        # fn.plotting(amplitude, frequency)                   # librosa feha moshkla f fourier bokra inshalah afhmhalko
-        st.audio(uploaded_file, format='audio/wav') 
-        xf,fft_out = fn.fourier_for_audio(uploaded_file)
-        fn.plotting(xf,fft_out)
+        fn.audio_fourier_transform(uploaded_file)
 
 else:
     pass
