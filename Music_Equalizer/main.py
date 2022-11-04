@@ -9,15 +9,20 @@ uploaded_file = st.file_uploader(label="Uploading Signal", type = ['csv',".wav"]
 
 # ------------------------------------------------------------------------------------ Calling Main Functions
 if uploaded_file is not None:
+    # Determining whether the file is csv or wav
+    file_name = uploaded_file.type
+    file_extension = file_name[-3:]
 
     # USER OPTIONS
     radio_button = st.radio("",["Default Signal", "Music", "Vowels", "Arrhythima", "Optional"])
 
     if radio_button == "Default Signal":
-        pass
+        if file_extension == "csv":
+            df = pd.read_csv(uploaded_file)
+            fn.dataframe_fourier_transform(df)
 
     elif radio_button == "Music":
-        pass
+        fn.musical_instruments_equalizer(uploaded_file)
 
     elif radio_button == "Vowels":
         pass
@@ -27,16 +32,6 @@ if uploaded_file is not None:
 
     else:
         pass
-
-    file_name = uploaded_file.type
-    file_extension = file_name[-3:]
-
-    if file_extension == "csv":
-        df = pd.read_csv(uploaded_file)
-        fn.dataframe_fourier_transform(df)
-    else:
-        fn.audio_fourier_transform(uploaded_file)
-
 else:
     pass
 
