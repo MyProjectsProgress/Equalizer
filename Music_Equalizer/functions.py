@@ -19,37 +19,32 @@ def dataframe_fourier_transform(dataframe):
     signal_x_axis = (dataframe.iloc[:,0]).to_numpy() # dataframe x axis
     signal_y_axis = (dataframe.iloc[:,1]).to_numpy() # dataframe y axis
 
-    x_philo = np.linspace(0,1,1000)
-    signal_y_axis_philo = np.sin(2*np.pi*5000*x_philo)
+    duration    = signal_x_axis[-1] # the last point in the x axis (number of seconds in the data frame)
+    sample_rate = len(signal_y_axis)/duration # returns number points per second
 
-    # duration    = signal_x_axis[-1] # the last point in the x axis (number of seconds in the data frame)
-    # sample_rate = len(signal_y_axis)/duration # returns number points per second
+    fourier_x_axis = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
+    fourier_y_axis = rfft(signal_y_axis) # returns complex numbers of the y axis in the data frame
+    peaks = find_peaks(signal_y_axis) # computes peaks of the signal 
+    peaks_indeces = peaks[0]  # list of indeces of frequency with high peaks
 
-    fourier_x_axis = rfftfreq(len(signal_y_axis_philo), (x_philo[1]-x_philo[0])) # returns the frequency x axis after fourier transform
-    fourier_y_axis = rfft(signal_y_axis_philo) # returns complex numbers of the y axis in the data frame
-    # st.write(fourier_x_axis)
-    # peaks = find_peaks(signal_y_axis_philo) # computes peaks of the signal 
-    # peaks_indeces = peaks[0]  # list of indeces of frequency with high peaks
-
-    # points_per_freq = len(fourier_x_axis) / (sample_rate) # NOT UNDERSTANDABLE 
+    points_per_freq = len(fourier_x_axis) / (sample_rate) # NOT UNDERSTANDABLE 
     
-    # fourier_y_axis = dataframe_creating_sliders(peaks_indeces, points_per_freq, fourier_x_axis, fourier_y_axis) # calling creating sliders function
+    fourier_y_axis = dataframe_creating_sliders(peaks_indeces, points_per_freq, fourier_x_axis, fourier_y_axis) # calling creating sliders function
 
-    # dataframe_fourier_inverse_transform(fourier_y_axis,signal_x_axis)
+    dataframe_fourier_inverse_transform(fourier_y_axis,signal_x_axis)
 
     # write("filename.wav", 44100, signal_y_axis)
 
     fig, axs = plt.subplots()
     fig.set_size_inches(14,5)
     plt.plot(fourier_x_axis, np.abs(fourier_y_axis)) #plotting signal before modifying
-    # plt.plot(fourier_x_axis[peaks_indeces[:]], np.abs(fourier_y_axis)[peaks_indeces[:]], marker="o") # plotting peaks points
+    plt.plot(fourier_x_axis[peaks_indeces[:]], np.abs(fourier_y_axis)[peaks_indeces[:]], marker="o") # plotting peaks points
     st.plotly_chart(fig,use_container_width=True)
 
 #  ----------------------------------- DATAFRAME INVERSE FOURIER TRANSFORM ---------------------------------------------------
 def dataframe_fourier_inverse_transform(fourier_y_axis,signal_x_axis):
 
     modified_signal = irfft(fourier_y_axis) # returning the inverse transform after modifying it with sliders
-    # write("filename.wav", 44100, modified_signal)
     fig2, axs2 = plt.subplots()
     fig2.set_size_inches(14,5)
     plt.plot(signal_x_axis,modified_signal) # ploting signal after modifying
