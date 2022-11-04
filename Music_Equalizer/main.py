@@ -20,7 +20,8 @@ if uploaded_file is not None:
         pass
 
     elif radio_button == "Music":
-        fn.musical_instruments_equalizer(uploaded_file)
+        if file_extension == "wav":
+            fn.musical_instruments_equalizer(uploaded_file)
 
     elif radio_button == "Vowels":
         pass
@@ -28,7 +29,7 @@ if uploaded_file is not None:
     elif radio_button == "Arrhythima":
         if file_extension == "csv":
             df = pd.read_csv(uploaded_file)
-            fn.dataframe_fourier_transform(df)
+            fn.arrhythima(df)
 
     else:
         pass
