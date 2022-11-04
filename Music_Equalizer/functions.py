@@ -71,7 +71,6 @@ def musical_instruments_equalizer(audio_file):
     n_samples   = obj.getnframes()            # total number of samples in the whole audio
     duration    = n_samples / sample_rate     # duration of the audio file
     signal_wave = obj.readframes(-1)          # amplitude of the sound
-
     signal_y_axis = np.frombuffer(signal_wave, dtype=np.int16)   #
     signal_x_axis = np.linspace(0, duration, len(signal_y_axis)) #
 
@@ -79,24 +78,42 @@ def musical_instruments_equalizer(audio_file):
     xf = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
     
     points_per_freq = len(xf) / (xf[-1]) # NOT UNDERSTANDABLE 
-    
+
+    fig, axs = plt.subplots()
+    fig.set_size_inches(14,5)
+    plt.plot(xf,np.abs(yf)) #plotting fourier
+    st.plotly_chart(fig)
+
+
+
     slider_range_drum    = st.slider(label='Drum Sound'   , min_value=0, max_value=10, value=1, step=1, key="drum slider")
     slider_range_timpani = st.slider(label='Timpani Sound', min_value=0, max_value=10, value=1, step=1, key="timpani slider")
     slider_range_piccolo = st.slider(label='Piccolo Sound', min_value=0, max_value=10, value=1, step=1, key="piccolo slider")
 
     yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_drum
+  
+
     yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= slider_range_timpani
+ 
+
     yf[int(points_per_freq*2700):int(points_per_freq*16000)] *= slider_range_piccolo
+    fig4, axs2 = plt.subplots()
+    fig4.set_size_inches(14,5)
+    plt.plot(xf,np.abs(yf)) #plotting fourier
+    st.plotly_chart(fig4,use_container_width=True)
+    
+
 
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
-    modified_signal_channel = np.int16(modified_signal) # returns two channels
+    modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
     write   ("Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
-    st.audio("example.wav", format='audio/wav')
+    st.audio("Equalized_Music.wav", format='audio/wav')
+   
+    
 
 #-------------------------------------- Fourier Transform on Audio ----------------------------------------------------
-def general_audio_tranform(audio_file):
-
+def uniform_range_mode(audio_file):
     st.audio(audio_file, format='audio/wav') # displaying the audio
     obj = wave.open(audio_file, 'rb')
     sample_rate = obj.getframerate()      # number of samples per second
@@ -110,30 +127,54 @@ def general_audio_tranform(audio_file):
     yf = rfft(signal_y_axis) # returns complex numbers of the y axis in the data frame
     xf = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
 
-    # fig0 = plt.figure(figsize=[14,5])
-    # plt.plot(xf, abs(yf))
-    # st.plotly_chart(fig0)
-    
+    st.write(sample_rate)
     points_per_freq = len(xf) / (xf[-1]) # NOT UNDERSTANDABLE 
     
-    slider_range_drum    = st.slider(label='Drum Sound'   , min_value=0, max_value=10, value=1, step=1, key="drum slider")
-    slider_range_timpani = st.slider(label='Timpani Sound', min_value=0, max_value=10, value=1, step=1, key="timpani slider")
-    slider_range_piccolo = st.slider(label='Piccolo Sound', min_value=0, max_value=10, value=1, step=1, key="piccolo slider")
+    fig, axs = plt.subplots()
+    fig.set_size_inches(14,5)
+    plt.plot(signal_x_axis, signal_y_axis) #plotting fourier
+    st.plotly_chart(fig)
 
-    yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_drum
-    yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= slider_range_timpani
-    yf[int(points_per_freq*2700):int(points_per_freq*16000)] *= slider_range_piccolo
+    slider_range_1 = st.slider(label='Slider_1' , min_value=0, max_value=10, value=1, step=1, key="1")
+    slider_range_2 = st.slider(label='Slider_2' , min_value=0, max_value=10, value=1, step=1, key="2")
+    slider_range_3 = st.slider(label='Slider_3' , min_value=0, max_value=10, value=1, step=1, key="3")
+    slider_range_4 = st.slider(label='Slider_4' , min_value=0, max_value=10, value=1, step=1, key="4")
+    slider_range_5 = st.slider(label='Slider_5' , min_value=0, max_value=10, value=1, step=1, key="5")
+    slider_range_6 = st.slider(label='Slider_6' , min_value=0, max_value=10, value=1, step=1, key="6")
+    slider_range_7 = st.slider(label='Slider_7' , min_value=0, max_value=10, value=1, step=1, key="7")
+    slider_range_8 = st.slider(label='Slider_8' , min_value=0, max_value=10, value=1, step=1, key="8")
+    slider_range_9 = st.slider(label='Slider_9' , min_value=0, max_value=10, value=1, step=1, key="9")
+    slider_range_10= st.slider(label='Slider_10', min_value=0, max_value=10, value=1, step=1, key="10")
 
-    # fig, axs = plt.subplots()
-    # fig.set_size_inches(14,5)
-    # plt.plot(xf, np.abs(yf)) #plotting fourier
-    # st.plotly_chart(fig)
 
-    modified_signal = irfft(yf) # returning the inverse transform after modifying it with sliders 
-    tryyy = np.int16(modified_signal)
 
-    write("example.wav", sample_rate, tryyy)
-    st.audio("example.wav", format='audio/wav')
+
+
+    yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_1
+    yf[int(points_per_freq*1000):int(points_per_freq* 2000)] *= slider_range_2
+    yf[int(points_per_freq*2000):int(points_per_freq*3000)]  *= slider_range_3
+    yf[int(points_per_freq*3000):int(points_per_freq*4000)]  *= slider_range_4
+    yf[int(points_per_freq*4000):int(points_per_freq*5000)]  *= slider_range_5
+    yf[int(points_per_freq*5000):int(points_per_freq*6000)]  *= slider_range_6
+    yf[int(points_per_freq*6000):int(points_per_freq*7000)]  *= slider_range_7
+    yf[int(points_per_freq*7000):int(points_per_freq*8000)]  *= slider_range_8
+    yf[int(points_per_freq*8000):int(points_per_freq*9000)]  *= slider_range_9
+    yf[int(points_per_freq*9000):int(points_per_freq*10000)] *= slider_range_10
+    # fig2, axs2 = plt.subplots()
+    # fig2.set_size_inches(14,5)
+    # plt.plot(xf,np.abs(yf)) # ploting signal after modifying
+    # st.plotly_chart(fig2,use_container_width=True)
+
+
+
+
+    modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
+    modified_signal_channel = np.int16(modified_signal) # returns two channels 
+
+
+    write   ("Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
+    st.audio("Equalized_Music.wav", format='audio/wav')
+
 
 #  ----------------------------------- JUST  A REFRENCE CODE TO HELP WHILE CREATING SLIDER ---------------------------------------------------------------
 # def creating_sliders(names_list):

@@ -14,10 +14,10 @@ if uploaded_file is not None:
     file_extension = file_name[-3:]
 
     # USER OPTIONS
-    radio_button = st.radio("",["Default Signal", "Music", "Vowels", "Arrhythima", "Optional"])
+    radio_button = st.radio("",["Uniform Range Mode", "Music", "Vowels", "Arrhythima", "Optional"])
 
-    if radio_button == "Default Signal":
-        pass
+    if radio_button == "Uniform Range Mode":
+        fn.uniform_range_mode(uploaded_file)
 
     elif radio_button == "Music":
         fn.musical_instruments_equalizer(uploaded_file)
