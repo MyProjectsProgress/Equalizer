@@ -122,13 +122,13 @@ def voice_changer(uploaded_file, column1, column2, column3):
     sampling_rate_factor = 1.4
 
     if voice == "Deep Voice":
-        # empty = column2.empty()
-        # empty.empty()
+        empty = column2.empty()
+        empty.empty()
         speed_rate = 1.4
         sampling_rate_factor = 1.4
     elif voice == "Smooth Voice":
-        # empty = column2.empty()
-        # empty.empty()
+        empty = column2.empty()
+        empty.empty()
         speed_rate = 0.5
         sampling_rate_factor = 0.5
 
@@ -136,7 +136,7 @@ def voice_changer(uploaded_file, column1, column2, column3):
     loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate=speed_rate)
 
     song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
-    column3.write(song)
+    empty.write(song)
 
 #-------------------------------------- PLOTING ----------------------------------------------------
 def plotting_graphs(column,x_axis,y_axis,flag):
