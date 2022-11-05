@@ -1,4 +1,3 @@
-import random 
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
@@ -170,39 +169,72 @@ def uniform_range_mode(audio_file):
         if slider_range_10 is not None:
             yf[int(points_per_freq*9000):int(points_per_freq*10000)] *= slider_range_10
 
-        
-        # fig2, axs2 = plt.subplots()
-        # fig2.set_size_inches(14,5)
-        # plt.plot(xf,np.abs(yf)) # ploting signal after modifying
-        # st.plotly_chart(fig2,use_container_width=True)
-
-
-
-
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
     modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
-#  ----------------------------------- JUST  A REFRENCE CODE TO HELP WHILE CREATING SLIDER ---------------------------------------------------------------
-# def creating_sliders(names_list):
+#-------------------------------------- ARYHTHMIA ----------------------------------------------------
+def arrhythima(dataframe):
 
-#     # Side note: we can change sliders colors and can customize sliders as well.
-#     # names_list = [('Megzawy', 100),('Magdy', 150)]
-#     columns = st.columns(len(names_list))
-#     boundary = int(50)
-#     sliders_values = []
-#     sliders = {}
+    signal_x_axis = (dataframe.iloc[:,0]).to_numpy() # dataframe x axis
+    signal_y_axis = (dataframe.iloc[:,1]).to_numpy() # dataframe y axis
 
-#     for index, tuple in enumerate(names_list): # ---> [ { 0, ('Megzawy', 100) } , { 1 , ('Magdy', 150) } ]
-#         # st.write(index)
-#         # st.write(i)
-#         min_value = tuple[1] - boundary
-#         max_value = tuple[1] + boundary
-#         key = f'member{random.randint(0,10000000000)}'
-#         with columns[index]:
-#             sliders[f'slidergroup{key}'] = svs.vertical_slider(key=key, default_value=tuple[1], step=1, min_value=min_value, max_value=max_value)
-#             if sliders[f'slidergroup{key}'] == None:
-#                 sliders[f'slidergroup{key}'] = tuple[1]
-#             sliders_values.append((tuple[0], sliders[f'slidergroup{key}']))
-# names_list = [('A', 100),('B', 150),('C', 75),('D', 25),('E', 150),('F', 60),('G', 86),('H', 150),('E', 150),('G', 25),('K', 99),('L', 150),
-#                 ('M', 150),('M', 55),('N', 150)]
-# fn.creating_sliders(names_list)
+    duration    = signal_x_axis[-1]           # the last point in the x axis (number of seconds in the data frame)
+    sample_rate = len(signal_y_axis)/duration # returns number points per second
+
+    fourier_x_axis = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
+    fourier_y_axis = rfft(signal_y_axis)                                               # returns complex numbers of the y axis in the data frame
+
+    # fig, axs = plt.subplots()
+    # fig.set_size_inches(14,5)
+    # plt.plot(fourier_x_axis, np.abs(fourier_y_axis)) #plotting fourier
+    # st.plotly_chart(fig)
+    
+    ecg = electrocardiogram()
+
+    fs = 360
+    time = np.arange(ecg.size) / fs
+    ndex_drums = np.where((time >= 47.2) & (time < 47.8))
+
+    ecg_amps =[]
+    time_amps = []
+    for i in ndex_drums:
+        ecg_amps.append(ecg[i])
+        time_amps.append(time[i])
+
+    st.write(list(time_amps))
+
+    fs = 1
+    time_hot = np.arange(len(ecg_amps)) / fs
+
+    fourier_x_axis_hot = rfftfreq(len(ecg_amps), (time_amps[1]-time_amps[0]))
+    fourier_y_axis_hot = rfft(ecg_amps)
+
+    fig0 = plt.figure(figsize=[9,5])
+    plt.plot(fourier_x_axis_hot, abs(fourier_y_axis_hot))
+    st.plotly_chart(fig0)  
+
+    fourier_x_axis = rfftfreq(len(ecg), (time[1]-time[0]))
+    fourier_y_axis = rfft(ecg)
+
+
+    points_per_freq = len(fourier_x_axis) / (fourier_x_axis[-1])
+
+    fourier_y_axis[int(points_per_freq*100)   :int(points_per_freq* 150)] *= 0
+
+    modified_signal         = irfft(fourier_y_axis) 
+
+    fig0 = plt.figure(figsize=[9,5])
+    plt.plot(fourier_x_axis, abs(fourier_y_axis))
+    st.plotly_chart(fig0)  
+
+    fig, axs = plt.subplots()
+    fig.set_size_inches(14,5)
+
+    plt.plot(time, (modified_signal))
+    plt.xlabel("time in s")
+    plt.ylabel("ECG in mV")
+    plt.xlim(47, 48)
+
+    st.plotly_chart(fig)
+
+
