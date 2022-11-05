@@ -33,16 +33,13 @@ def uniform_range_mode(column1, column2, column3, uploaded_file):
     list_of_sliders_values = []
     while index < 10:
         with columns[index]:
-            sliders = (svs.vertical_slider(key=index, min_value=0, max_value=10,default_value=1, step=1))
+            sliders = (st.slider(label="",key=index, min_value=0, max_value=10,value=1, step=1))
             st.write("slider",index)
         index +=1
         list_of_sliders_values.append(sliders)
 
-    st.write(list_of_sliders_values)
-    
     for indexxx,value in enumerate(list_of_sliders_values):
-        if value is not None:
-            yf[int(points_per_freq * 1000 * indexxx)  : int(points_per_freq * 1000 * indexxx) + 1000] *= value
+        yf[int(points_per_freq * 1000 * indexxx)  : int(points_per_freq * 1000 * indexxx + points_per_freq * 1000)] *= value
     else:
         pass
 
