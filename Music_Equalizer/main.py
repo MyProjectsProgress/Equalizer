@@ -1,23 +1,28 @@
 import streamlit as st
 import pandas as pd
 import functions as fn
+import wave
 
 st.set_page_config(layout="wide")
 
+#------------------------------------------------------------------------------------- COLUMNS
+column1,column2,column3=st.columns([1,3,3])
+
 # ------------------------------------------------------------------------------------ Uploaded File Browsing Button
-uploaded_file = st.file_uploader(label="Uploading Signal", type = ['csv',".wav"])
+uploaded_file = column1.file_uploader(label="Uploading Signal", type = ['csv',".wav"])
+
+#------------------------------------------------------------------------------------- USER OPTIONS
+radio_button = column1.radio("",[ "Default","Music", "Vowels", "Arrhythima", "Optional"])
 
 # ------------------------------------------------------------------------------------ Calling Main Functions
 if uploaded_file is not None:
+
     # Determining whether the file is csv or wav
     file_name = uploaded_file.type
     file_extension = file_name[-3:]
 
-    # USER OPTIONS
-    radio_button = st.radio("",["Uniform Range Mode", "Music", "Vowels", "Arrhythima", "Optional"])
-
-    if radio_button == "Uniform Range Mode":
-        fn.uniform_range_mode(uploaded_file)
+    if radio_button =="Default":
+        pass
 
     elif radio_button == "Music":
         if file_extension == "wav":
@@ -27,13 +32,10 @@ if uploaded_file is not None:
         pass
 
     elif radio_button == "Arrhythima":
-        if file_extension == "csv":
-            df = pd.read_csv(uploaded_file)
-            fn.arrhythima(df)
+            fn.arrhythima()
 
     else:
         pass
+
 else:
-    pass
-
-
+    fn.uniform_range_mode(column1, column2, column3)
