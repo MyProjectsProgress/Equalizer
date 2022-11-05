@@ -23,7 +23,7 @@ if select_mode == "Default":
     fn.uniform_range_mode(column1, column2, column3)
 
 elif select_mode == "Music":
-    fn.musical_instruments_equalizer()
+    fn.musical_instruments_equalizer(column1, column2, column3)
 
 elif select_mode == "Vowels":
     pass
