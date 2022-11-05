@@ -10,10 +10,10 @@ from scipy.io.wavfile import write
 import wave
 
 #-------------------------------------- UNIFORM RANGE MODE ----------------------------------------------------
-def uniform_range_mode(column1, column2, column3):
+def uniform_range_mode(column1, column2, column3, uploaded_file):
 
-    column1.audio  ('.piano_timpani_piccolo_out.wav', format='audio/wav') # displaying the audio
-    obj = wave.open('.piano_timpani_piccolo_out.wav', 'rb')
+    column1.audio  (uploaded_file, format='audio/wav') # displaying the audio
+    obj = wave.open(uploaded_file, 'rb')
     sample_rate   = obj.getframerate()      # number of samples per second
     n_samples     = obj.getnframes()        # total number of samples in the whole audio
     duration      = n_samples / sample_rate # duration of the audio file
@@ -30,17 +30,29 @@ def uniform_range_mode(column1, column2, column3):
 
     columns=st.columns(10)
     index=0
+    list_of_sliders_values = []
     while index < 10:
         with columns[index]:
-            slider_range = svs.vertical_slider(key=index, min_value=0, max_value=10 , default_value=1, step=1)
-        if slider_range is not None:
-            yf[int(points_per_freq*9000):int(points_per_freq*10000)] *= slider_range
+            sliders = (svs.vertical_slider(key=index, min_value=0, max_value=10,default_value=1, step=1))
+            st.write("slider",index)
         index +=1
+        list_of_sliders_values.append(sliders)
+
+    st.write(list_of_sliders_values)
+    
+    for indexxx,value in enumerate(list_of_sliders_values):
+        if value is not None:
+            yf[int(points_per_freq * 1000 * indexxx)  : int(points_per_freq * 1000 * indexxx) + 1000] *= value
+    else:
+        pass
 
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
     modified_signal_channel = np.int16(modified_signal) # returns two channels
     
     plotting_graphs(column3,signal_x_axis, modified_signal)
+
+    write(".Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
+    st.audio(".Equalized_Music.wav", format='audio/wav')
 
 #-------------------------------------- MUSICAL INSTRUMENTS EQUALIZER ----------------------------------------------------
 def musical_instruments_equalizer(audio_file):
