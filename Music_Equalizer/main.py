@@ -1,18 +1,21 @@
 import streamlit as st
 import pandas as pd
 import functions as fn
-import wave
 
 st.set_page_config(layout="wide")
+with open('Music_Equalizer\main.css') as fileStyle:
+    st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
 
 #------------------------------------------------------------------------------------- COLUMNS
+
 column1,column2,column3=st.columns([1,3,3])
 
 # ------------------------------------------------------------------------------------ Uploaded File Browsing Button
 uploaded_file = column1.file_uploader(label="Uploading Signal", type = ['csv',".wav"])
 
 #------------------------------------------------------------------------------------- USER OPTIONS
-radio_button = column1.radio("",[ "Default","Music", "Vowels", "Arrhythima", "Optional"])
+
+select_mode = column1.selectbox("",[ "Default","Music", "Vowels", "Arrhythima", "Optional"])
 
 # ------------------------------------------------------------------------------------ Calling Main Functions
 if uploaded_file is not None:
@@ -21,21 +24,22 @@ if uploaded_file is not None:
     file_name = uploaded_file.type
     file_extension = file_name[-3:]
 
-    if radio_button =="Default":
-        pass
+    if select_mode =="Default":
+        fn.uniform_range_mode(column1, column2, column3, uploaded_file)
 
-    elif radio_button == "Music":
+    elif select_mode == "Music":
         if file_extension == "wav":
             fn.musical_instruments_equalizer(uploaded_file)
 
-    elif radio_button == "Vowels":
+    elif select_mode == "Vowels":
         pass
 
-    elif radio_button == "Arrhythima":
+    elif select_mode == "Arrhythima":
             fn.arrhythima()
 
     else:
         pass
 
 else:
-    fn.uniform_range_mode(column1, column2, column3)
+    pass
+    # fn.uniform_range_mode(column1, column2, column3)
