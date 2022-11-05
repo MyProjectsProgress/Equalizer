@@ -96,21 +96,17 @@ def arrhythima():
 
     points_per_freq = len(fourier_x_axis) / (fourier_x_axis[-1])
 
-    fourier_y_axis[int(points_per_freq*12)   :int(points_per_freq* 30)] *= 0
+    fourier_y_axis[int(points_per_freq*1)   :int(points_per_freq* 5)] *= 0
 
     modified_signal         = irfft(fourier_y_axis) 
-
-    fig0 = plt.figure(figsize=[9,5])
-    plt.plot(fourier_x_axis, abs(fourier_y_axis))
-    st.plotly_chart(fig0)  
 
     fig, axs = plt.subplots()
     fig.set_size_inches(14,5)
 
     plt.plot(time, (modified_signal))
-    plt.xlabel("time in s")
+    plt.xlabel("Time in s")
     plt.ylabel("ECG in mV")
-    plt.xlim(45, 50)
+    plt.xlim(45, 51)
 
     st.plotly_chart(fig)
 

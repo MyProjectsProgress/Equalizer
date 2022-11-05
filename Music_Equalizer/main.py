@@ -38,4 +38,5 @@ if uploaded_file is not None:
         pass
 
 else:
-    fn.uniform_range_mode(column1, column2, column3)
+    # fn.uniform_range_mode(column1, column2, column3)
+    fn.arrhythima()

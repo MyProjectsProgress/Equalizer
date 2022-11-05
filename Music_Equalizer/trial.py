@@ -97,4 +97,4 @@
 #             fourier_y_axis[peaks_indeces[index]  - 2 : peaks_indeces[index]  + 2] *= slider_range
 #     return fourier_y_axis
 
-    # index_drums = np.where((time >= 47.2) & (time < 47.8))
+# index_drums = np.where((time >= 47.2) & (time < 47.8))
