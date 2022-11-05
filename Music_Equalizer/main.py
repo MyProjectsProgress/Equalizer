@@ -14,12 +14,10 @@ if uploaded_file is not None:
     file_extension = file_name[-3:]
 
     # USER OPTIONS
-    radio_button = st.radio("",["Default Signal", "Music", "Vowels", "Arrhythima", "Optional"])
+    radio_button = st.radio("",["Uniform Range Mode", "Music", "Vowels", "Arrhythima", "Optional"])
 
-    if radio_button == "Default Signal":
-        if file_extension == "csv":
-            df = pd.read_csv(uploaded_file)
-            fn.dataframe_fourier_transform(df)
+    if radio_button == "Uniform Range Mode":
+        fn.uniform_range_mode(uploaded_file)
 
     elif radio_button == "Music":
         if file_extension == "wav":
