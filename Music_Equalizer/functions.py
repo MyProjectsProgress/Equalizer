@@ -79,38 +79,29 @@ def musical_instruments_equalizer(audio_file):
     
     points_per_freq = len(xf) / (xf[-1]) # NOT UNDERSTANDABLE 
 
-    fig, axs = plt.subplots()
-    fig.set_size_inches(14,5)
-    plt.plot(xf,np.abs(yf)) #plotting fourier
-    st.plotly_chart(fig)
-
-
+    # fig, axs = plt.subplots()
+    # fig.set_size_inches(14,5)
+    # plt.plot(signal_x_axis,signal_y_axis)
+    # st.plotly_chart(fig)
 
     slider_range_drum    = st.slider(label='Drum Sound'   , min_value=0, max_value=10, value=1, step=1, key="drum slider")
     slider_range_timpani = st.slider(label='Timpani Sound', min_value=0, max_value=10, value=1, step=1, key="timpani slider")
     slider_range_piccolo = st.slider(label='Piccolo Sound', min_value=0, max_value=10, value=1, step=1, key="piccolo slider")
 
     yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_drum
-  
-
     yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= slider_range_timpani
- 
-
     yf[int(points_per_freq*2700):int(points_per_freq*16000)] *= slider_range_piccolo
-    fig4, axs2 = plt.subplots()
-    fig4.set_size_inches(14,5)
-    plt.plot(xf,np.abs(yf)) #plotting fourier
-    st.plotly_chart(fig4,use_container_width=True)
-    
 
+    # fig4, axs2 = plt.subplots()
+    # fig4.set_size_inches(14,5)
+    # plt.plot(xf,np.abs(yf))
+    # st.plotly_chart(fig4,use_container_width=True)
 
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
     modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
     write   ("Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
     st.audio("Equalized_Music.wav", format='audio/wav')
-   
-    
 
 #-------------------------------------- Fourier Transform on Audio ----------------------------------------------------
 def uniform_range_mode(audio_file):
@@ -125,7 +116,7 @@ def uniform_range_mode(audio_file):
 
     yf = rfft(signal_y_axis) # returns complex numbers of the y axis in the data frame
     xf = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
-     
+    
     peaks = find_peaks(signal_y_axis) # computes peaks of the signal 
     peaks_indeces = peaks[0]  # list of indeces of frequency with high peaks
 
