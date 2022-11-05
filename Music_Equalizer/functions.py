@@ -65,7 +65,7 @@ def dataframe_creating_sliders(peaks_indeces,points_per_freq,fourier_x_axis,four
 #-------------------------------------- Musical Instruments Equalizer ----------------------------------------------------
 def musical_instruments_equalizer(audio_file):
 
-    st.audio(audio_file, format='audio/wav')  # displaying the audio
+    st.audio(audio_file, format='audio/wav')  # displaying the audio 
     obj         = wave.open(audio_file, 'rb') # creating object 
     sample_rate = obj.getframerate()          # number of samples per second
     n_samples   = obj.getnframes()            # total number of samples in the whole audio
