@@ -120,12 +120,14 @@ def uniform_range_mode(audio_file):
     n_samples   = obj.getnframes()        # total number of samples in the whole audio
     duration    = n_samples / sample_rate # duration of the audio file
     signal_wave = obj.readframes(-1)      # amplitude of the sound
-
     signal_y_axis = np.frombuffer(signal_wave, dtype=np.int16)
     signal_x_axis = np.linspace(0, duration, len(signal_y_axis))
 
     yf = rfft(signal_y_axis) # returns complex numbers of the y axis in the data frame
     xf = rfftfreq(len(signal_y_axis), (signal_x_axis[1]-signal_x_axis[0])) # returns the frequency x axis after fourier transform
+     
+    peaks = find_peaks(signal_y_axis) # computes peaks of the signal 
+    peaks_indeces = peaks[0]  # list of indeces of frequency with high peaks
 
     st.write(sample_rate)
     points_per_freq = len(xf) / (xf[-1]) # NOT UNDERSTANDABLE 
@@ -134,36 +136,54 @@ def uniform_range_mode(audio_file):
     fig.set_size_inches(14,5)
     plt.plot(signal_x_axis, signal_y_axis) #plotting fourier
     st.plotly_chart(fig)
+    
+    col1,col2,col3,col4,col5,col6,col7,col8,col9,col10=st.columns([1,1,1,1,1,1,1,1,1,1])
+    with col1:
+        slider_range_1 = svs.vertical_slider(key=1,min_value=0, max_value=10, default_value=1, step=1)
+        if slider_range_1 is not None:
+            yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_1
+    with col2:
+        slider_range_2 = svs.vertical_slider(key=2,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_2 is not None:
+            yf[int(points_per_freq*1000):int(points_per_freq* 2000)] *= slider_range_2
+    with col3:
+        slider_range_3 = svs.vertical_slider(key=3,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_3 is not None:
+            yf[int(points_per_freq*2000):int(points_per_freq*3000)]  *= slider_range_3
+    with col4:
+        slider_range_4 = svs.vertical_slider(key=4,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_4 is not None:
+            yf[int(points_per_freq*3000):int(points_per_freq*4000)]  *= slider_range_4
+    with col5:
+        slider_range_5 = svs.vertical_slider(key=5,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_5 is not None:
+            yf[int(points_per_freq*4000):int(points_per_freq*5000)]  *= slider_range_5
+    with col6:
+        slider_range_6 =  svs.vertical_slider(key=6,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_6 is not None:
+           yf[int(points_per_freq*5000):int(points_per_freq*6000)]  *= slider_range_6
+    with col7:
+        slider_range_7 = svs.vertical_slider(key=7,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_7 is not None:
+            yf[int(points_per_freq*6000):int(points_per_freq*7000)]  *= slider_range_7
+    with col8:
+        slider_range_8 = svs.vertical_slider(key=8,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_8 is not None:
+            yf[int(points_per_freq*7000):int(points_per_freq*8000)]  *= slider_range_8
+    with col9:
+        slider_range_9 = svs.vertical_slider(key=9,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_9 is not None:
+             yf[int(points_per_freq*8000):int(points_per_freq*9000)]  *= slider_range_9
+    with col10:
+        slider_range_10= svs.vertical_slider(key=10,min_value=0, max_value=10,default_value=1, step=1)
+        if slider_range_10 is not None:
+            yf[int(points_per_freq*9000):int(points_per_freq*10000)] *= slider_range_10
 
-    slider_range_1 = st.slider(label='Slider_1' , min_value=0, max_value=10, value=1, step=1, key="1")
-    slider_range_2 = st.slider(label='Slider_2' , min_value=0, max_value=10, value=1, step=1, key="2")
-    slider_range_3 = st.slider(label='Slider_3' , min_value=0, max_value=10, value=1, step=1, key="3")
-    slider_range_4 = st.slider(label='Slider_4' , min_value=0, max_value=10, value=1, step=1, key="4")
-    slider_range_5 = st.slider(label='Slider_5' , min_value=0, max_value=10, value=1, step=1, key="5")
-    slider_range_6 = st.slider(label='Slider_6' , min_value=0, max_value=10, value=1, step=1, key="6")
-    slider_range_7 = st.slider(label='Slider_7' , min_value=0, max_value=10, value=1, step=1, key="7")
-    slider_range_8 = st.slider(label='Slider_8' , min_value=0, max_value=10, value=1, step=1, key="8")
-    slider_range_9 = st.slider(label='Slider_9' , min_value=0, max_value=10, value=1, step=1, key="9")
-    slider_range_10= st.slider(label='Slider_10', min_value=0, max_value=10, value=1, step=1, key="10")
-
-
-
-
-
-    yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_1
-    yf[int(points_per_freq*1000):int(points_per_freq* 2000)] *= slider_range_2
-    yf[int(points_per_freq*2000):int(points_per_freq*3000)]  *= slider_range_3
-    yf[int(points_per_freq*3000):int(points_per_freq*4000)]  *= slider_range_4
-    yf[int(points_per_freq*4000):int(points_per_freq*5000)]  *= slider_range_5
-    yf[int(points_per_freq*5000):int(points_per_freq*6000)]  *= slider_range_6
-    yf[int(points_per_freq*6000):int(points_per_freq*7000)]  *= slider_range_7
-    yf[int(points_per_freq*7000):int(points_per_freq*8000)]  *= slider_range_8
-    yf[int(points_per_freq*8000):int(points_per_freq*9000)]  *= slider_range_9
-    yf[int(points_per_freq*9000):int(points_per_freq*10000)] *= slider_range_10
-    # fig2, axs2 = plt.subplots()
-    # fig2.set_size_inches(14,5)
-    # plt.plot(xf,np.abs(yf)) # ploting signal after modifying
-    # st.plotly_chart(fig2,use_container_width=True)
+        
+        # fig2, axs2 = plt.subplots()
+        # fig2.set_size_inches(14,5)
+        # plt.plot(xf,np.abs(yf)) # ploting signal after modifying
+        # st.plotly_chart(fig2,use_container_width=True)
 
 
 
@@ -171,9 +191,60 @@ def uniform_range_mode(audio_file):
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
     modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
+        # yf=audio_creating_sliders(peaks_indeces,points_per_freq,xf,yf)
 
     write   ("Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
     st.audio("Equalized_Music.wav", format='audio/wav')
+
+# yf=audio_creating_sliders(peaks_indeces,points_per_freq,xf,yf)
+
+# def audio_creating_sliders(points_per_freq,yf):
+#         names_list = [('1', 1),('2', 1),('3',1),('4',1),(5,1),('6',1),('7',1),('8',1),('9',1),('10',1)]
+#         columns = st.columns(len(names_list)) 
+#         boundary = int(50)
+#         sliders_values = []
+#         sliders = {}     
+#         for index,tuple in enumerate(names_list): 
+            
+#          minimum_range = int(points_per_freq * 0)
+#          maximum_range = int(points_per_freq * 10000)
+#          key = f'member{random.randint(0,10000000000)}'
+#          with columns[index]:
+#             sliders[f'slidergroup{key}'] = svs.vertical_slider(key=key,min_value=0, max_value=10, default_value=1, step=1)
+        
+#          minimum_range = int(points_per_freq * 1000)
+#          maximum_range = int(points_per_freq * 10000)
+#          if ssliders[f'slidergroup{key}'] is not None:
+#             yf[minimum_range  : maximum_range ] *= slider_range[f'slidergroup{key}']
+#         return yf
+# # def dataframe_creating_sliders(peaks_indeces,points_per_freq,fourier_x_axis,fourier_y_axis):
+
+# #     peak_frequencies = fourier_x_axis[peaks_indeces[:]] 
+# #     columns = st.columns(10)
+# #     for index, frequency in enumerate(peak_frequencies): 
+# #         with columns[index]:
+# #             slider_range = svs.vertical_slider(min_value=0.0, max_value=2.0, default_value=1., step=.1, key=index)
+# #             st.write(type((slider_range)))
+# #         # these three lines determine the range that will be modified by the slider
+# #         # needs more investigation
+# #         minimum_range = int(points_per_freq * (peaks_indeces[index] - 1.5))
+# #         maximum_range = int(points_per_freq * (peaks_indeces[index] + 1.5))
+# #         fourier_y_axis[minimum_range - 1 : maximum_range + 2] *= slider_range
+# #     return fourier_y_axis
+
+# def audio_creating_sliders(peaks_indeces,points_per_freq,xf,yf):
+#     peak_frequencies = xf[peaks_indeces[:10000]] 
+#     columns = st.columns(10) 
+#     for index,frequency in enumerate(peak_frequencies): 
+#         with columns[index]:
+#             # key = f'member{random.randint(0,10000000000)}'
+#             slider_range = svs.vertical_slider (min_value=1, max_value=10,step=1,key=index)
+#             minimum_range = int(points_per_freq * 1000)
+#             maximum_range = int(points_per_freq * 10000)
+#             if slider_range is not None:
+#                 yf[minimum_range - 1 : maximum_range + 2] *= slider_range
+#             return yf
+
 
 
 #  ----------------------------------- JUST  A REFRENCE CODE TO HELP WHILE CREATING SLIDER ---------------------------------------------------------------
