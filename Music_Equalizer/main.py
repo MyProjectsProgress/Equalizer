@@ -1,6 +1,7 @@
 import streamlit as st
 import functions as fn
 
+
 st.set_page_config(layout="wide")
 with open('main.css') as fileStyle:
     st.markdown(f'<style>{fileStyle.read()}</style>', unsafe_allow_html=True)
@@ -31,6 +32,9 @@ elif select_mode == "Vowels":
 elif select_mode == "Arrhythima":
     fn.arrhythima(column1, column2, column3)
 
-else:
-    pass
+elif select_mode == "Optional":
+    if uploaded_file:
+        fn.voice_changer(uploaded_file, column1, column2, column3)
+
+# fn.music2()
 

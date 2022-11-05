@@ -8,6 +8,8 @@ from scipy.fft import rfft, rfftfreq
 from scipy.fft import irfft
 from scipy.io.wavfile import write
 import wave
+import librosa
+import IPython.display as ipd
 
 #-------------------------------------- UNIFORM RANGE MODE ----------------------------------------------------
 def uniform_range_mode(column1, column2, column3):
@@ -46,9 +48,9 @@ def uniform_range_mode(column1, column2, column3):
     
     plotting_graphs(column3,signal_x_axis, modified_signal, False)
 
-    write(".Equalized_Music.wav", sample_rate, modified_signal_channel)   # creates the modified song
-    column2.audio  (".piano_timpani_piccolo_out.wav", format='audio/wav') # displaying the audio before editing
-    column3.audio(".Equalized_Music.wav", format='audio/wav')             # displaying the audio after editing
+    write(".Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
+    column2.audio(".piano_timpani_piccolo_out.wav", format='audio/wav') # displaying the audio before editing
+    column3.audio(".Equalized_Music.wav"          , format='audio/wav') # displaying the audio after editing
 
 #-------------------------------------- MUSICAL INSTRUMENTS EQUALIZER ----------------------------------------------------
 def musical_instruments_equalizer(column1, column2, column3):
@@ -109,6 +111,33 @@ def arrhythima(column1, column2, column3):
 
     plotting_graphs(column3, time, modified_signal, True)
 
+#-------------------------------------- OPTIONAL ----------------------------------------------------
+def voice_changer(uploaded_file, column1, column2, column3):
+
+    voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
+
+    column2.audio(uploaded_file, format="audio/wav", start_time=0)
+
+    speed_rate = 1.4
+    sampling_rate_factor = 1.4
+
+    if voice == "Deep Voice":
+        # empty = column2.empty()
+        # empty.empty()
+        speed_rate = 1.4
+        sampling_rate_factor = 1.4
+    elif voice == "Smooth Voice":
+        # empty = column2.empty()
+        # empty.empty()
+        speed_rate = 0.5
+        sampling_rate_factor = 0.5
+
+    loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
+    loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate=speed_rate)
+
+    song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
+    column3.write(song)
+
 #-------------------------------------- PLOTING ----------------------------------------------------
 def plotting_graphs(column,x_axis,y_axis,flag):
 
@@ -120,3 +149,6 @@ def plotting_graphs(column,x_axis,y_axis,flag):
         plt.xlabel("Time in s")
         plt.ylabel("ECG in mV")
     column.plotly_chart(fig)
+
+# def musc2():
+    # pass
