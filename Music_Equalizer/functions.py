@@ -9,6 +9,7 @@ from scipy.fft import irfft
 from scipy.io.wavfile import write
 import wave
 import librosa
+import librosa.display
 import IPython.display as ipd
 
 #-------------------------------------- UNIFORM RANGE MODE ----------------------------------------------------
@@ -53,7 +54,7 @@ def uniform_range_mode(column1, column2, column3):
     column3.audio(".Equalized_Music.wav"          , format='audio/wav') # displaying the audio after editing
 
 #-------------------------------------- MUSICAL INSTRUMENTS EQUALIZER ----------------------------------------------------
-def musical_instruments_equalizer(column1, column2, column3):
+def musical_instruments_equalizer(column1, column2, column3, show_spectro):
 
     obj           = wave.open(".piano_timpani_piccolo_out.wav", 'rb') # creating object
     sample_rate   = obj.getframerate()                                # number of samples per second
@@ -68,7 +69,10 @@ def musical_instruments_equalizer(column1, column2, column3):
     
     points_per_freq = len(xf) / (xf[-1]) # duration
 
-    plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
+    if (show_spectro):
+        plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
+    else:
+        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
 
     sub_column1, sub_column2, sub_column3 = st.columns([1,1,1])
 
@@ -76,16 +80,20 @@ def musical_instruments_equalizer(column1, column2, column3):
     slider_range_timpani = sub_column2.slider(label='Timpani Sound', min_value=0, max_value=10, value=1, step=1, key="timpani slider")
     slider_range_piccolo = sub_column3.slider(label='Piccolo Sound', min_value=0, max_value=10, value=1, step=1, key="piccolo slider")
 
-    yf[int(points_per_freq*0)   :int(points_per_freq* 1000)] *= slider_range_drum
+    yf[:int(points_per_freq* 1000)] *= slider_range_drum
     yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= slider_range_timpani
-    yf[int(points_per_freq*2700):int(points_per_freq*16000)] *= slider_range_piccolo
+    yf[int(points_per_freq*2700):] *= slider_range_piccolo
 
     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
     modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
-    plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
     write   (".Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
+
+    if (show_spectro):
+        plot_spectro(column3,".Equalized_Music.wav")
+    else:
+        plotting_graphs(column3,signal_x_axis,modified_signal,False)
+
     column2.audio('.piano_timpani_piccolo_out.wav', format='audio/wav')    # displaying the audio before editing
     column3.audio(".Equalized_Music.wav", format='audio/wav')              # displaying the audio after  editing
 
@@ -138,7 +146,7 @@ def voice_changer(uploaded_file, column1, column2, column3):
     song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
     empty.write(song)
 
-#-------------------------------------- PLOTING ----------------------------------------------------
+#-------------------------------------- PLOTING Time Graph ----------------------------------------------------
 def plotting_graphs(column,x_axis,y_axis,flag):
 
     fig, axs = plt.subplots()
@@ -148,7 +156,20 @@ def plotting_graphs(column,x_axis,y_axis,flag):
         plt.xlim(45, 55)
         plt.xlabel("Time in s")
         plt.ylabel("ECG in mV")
-    column.plotly_chart(fig)
+    column.pyplot(fig)
+
+#-------------------------------------- PLOTING Spectrogram ----------------------------------------------------
+def plot_spectro(column,audio_file):
+    y, sr = librosa.load(audio_file)
+    D = librosa.stft(y)  # STFT of y
+    S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
+    fig, ax = plt.subplots()
+    img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
+    ax.set(title='')
+    fig.colorbar(img, ax=ax, format="%+2.f dB")
+    column.pyplot(fig)
+
+
 
 # def musc2():
     # pass
