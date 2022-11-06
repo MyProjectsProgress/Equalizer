@@ -72,29 +72,32 @@ def musical_instruments_equalizer(column1, column2, column3, show_spectro):
     column3.audio(".Equalized_Music.wav", format='audio/wav')              # displaying the audio after  editing
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def arrhythima(column1, column2, column3,show_spectro):
+def arrhythima(column1, column2, column3, show_spectro, dataframe):
 
-    ecg = electrocardiogram()       # Calling the arrhythmia database of a woman
-    fs = 360                        # determining f sample
-    time = np.arange(ecg.size) / fs # detrmining tima axis
+    # normal beat
+    y1 = dataframe.iloc[0,:186]
+    x1 = range(len(y1))
+    plotting_graphs(column2, x1, y1, False)
 
-    fourier_y_axis, points_per_freq = fourier_transform(ecg, fs)         # Fourier Transfrom
+    # unknown beat
+    y2 = dataframe.iloc[1,:186]
+    x2 = range(len(y2))
+    plotting_graphs(column3, x2, y2, False)
 
-    sliders_labels = 'Arrhythima'
+    # ventriculer etopic beat
+    y3 = dataframe.iloc[2,:186]
+    x3 = range(len(y3))
+    plotting_graphs(column2, x3, y3, False)
 
-    fourier_y_axis = equalizer(fourier_y_axis, points_per_freq, 1, sliders_labels, "Arrhythima")
+    # super ventriculer etopic beat
+    y4 = dataframe.iloc[3,:186]
+    x4 = range(len(y4))
+    plotting_graphs(column3, x4, y4, False)
 
-    if (show_spectro):
-        pass
-    else:
-        plotting_graphs(column2,time,ecg,True)
-
-    modified_signal = irfft(fourier_y_axis) 
-
-    if (show_spectro):
-        pass
-    else:
-        plotting_graphs(column3, time, modified_signal, True)
+    # fusion beat
+    y5 = dataframe.iloc[4,:186]
+    x5 = range(len(y5))
+    plotting_graphs(column2, x5, y5, False)
 
 #-------------------------------------- OPTIONAL ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2, column3, show_spectro):

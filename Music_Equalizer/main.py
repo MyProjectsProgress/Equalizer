@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import functions as fn
 
 st.set_page_config(layout="wide")
@@ -40,7 +41,9 @@ elif select_mode == "Vowels":
     pass
 
 elif select_mode == "Arrhythima":
-    fn.arrhythima(column1, column2, column3,show_spectro)
+    if uploaded_file:
+        df = pd.read_csv(uploaded_file)
+        fn.arrhythima(column1, column2, column3 ,show_spectro, df)
 
 elif select_mode == "Optional":
     if uploaded_file:

@@ -98,3 +98,27 @@
 #     return fourier_y_axis
 
 # index_drums = np.where((time >= 47.2) & (time < 47.8))
+
+
+# #  ----------------------------------- OLD ARRHYTHMIA ---------------------------------------------------------------
+# ecg = electrocardiogram()       # Calling the arrhythmia database of a woman
+    # fs = 360                        # determining f sample
+    # time = np.arange(ecg.size) / fs # detrmining tima axis
+
+    # fourier_y_axis, points_per_freq = fourier_transform(ecg, fs)         # Fourier Transfrom
+
+    # sliders_labels = 'Arrhythima'
+
+    # fourier_y_axis = equalizer(fourier_y_axis, points_per_freq, 1, sliders_labels, "Arrhythima")
+
+    # if (show_spectro):
+    #     pass
+    # else:
+    #     plotting_graphs(column2,time,ecg,True)
+
+    # modified_signal = irfft(fourier_y_axis) 
+
+    # if (show_spectro):
+    #     pass
+    # else:
+    #     plotting_graphs(column3, time, modified_signal, True)
