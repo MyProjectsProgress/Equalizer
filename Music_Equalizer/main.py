@@ -31,7 +31,7 @@ if uploaded_file is not None:
     file_extension = file_name[-3:]
 
 if select_mode == "Default":
-    fn.uniform_range_mode(column1, column2, column3)
+    fn.uniform_range_mode(column1, column2, column3,show_spectro)
 
 elif select_mode == "Music":
     fn.musical_instruments_equalizer(column1, column2, column3, show_spectro)
@@ -40,11 +40,11 @@ elif select_mode == "Vowels":
     pass
 
 elif select_mode == "Arrhythima":
-    fn.arrhythima(column1, column2, column3)
+    fn.arrhythima(column1, column2, column3,show_spectro)
 
 elif select_mode == "Optional":
     if uploaded_file:
-        fn.voice_changer(uploaded_file, column1, column2, column3)
+        fn.voice_changer(uploaded_file, column1, column2, column3, show_spectro)
 
 # fn.music2()
 
