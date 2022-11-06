@@ -37,7 +37,7 @@ elif select_mode == "Music":
     fn.musical_instruments_equalizer(column1, column2, column3, show_spectro)
 
 elif select_mode == "Vowels":
-    pass
+    fn.vowels_equalizer(column1, column2, column3, show_spectro)
 
 elif select_mode == "Arrhythima":
     fn.arrhythima(column1, column2, column3,show_spectro)
@@ -45,6 +45,3 @@ elif select_mode == "Arrhythima":
 elif select_mode == "Optional":
     if uploaded_file:
         fn.voice_changer(uploaded_file, column1, column2, column3, show_spectro)
-
-# fn.music2()
-
