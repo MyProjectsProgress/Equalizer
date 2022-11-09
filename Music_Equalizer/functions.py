@@ -72,38 +72,38 @@ def musical_instruments_equalizer(column1, column2, column3, show_spectro):
     column3.audio(".Equalized_Music.wav", format='audio/wav')              # displaying the audio after  editing
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def vowels_equalizer(column1, column2, column3, show_spectro):
+# def vowels_equalizer(file,column1, column2, column3, show_spectro):
 
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(".piano_timpani_piccolo_out.wav")    # read audio file
+#     signal_x_axis, signal_y_axis, sample_rate = read_audio(file)    # read audio file
     
-    yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
+#     yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
 
-    if (show_spectro):
-        plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
-    else:
-        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
+#     if (show_spectro):
+#         plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
+#     else:
+#         plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
 
-    sliders_labels = ['','','','','']
+#     sliders_labels = ['','','','','']
 
-    yf = equalizer(yf, points_per_freq, 5, sliders_labels, "Vowels")         #create sliders and modify signal
+#     yf = equalizer(yf, points_per_freq, 5, sliders_labels, "Vowels")         #create sliders and modify signal
 
-    modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
-    modified_signal_channel = np.int16(modified_signal) # returns two channels 
+#     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
+#     modified_signal_channel = np.int16(modified_signal) # returns two channels 
 
-    write(".Equalized_Vowels.wav", sample_rate, modified_signal_channel)     # creates the modified song
+#     write(".Equalized_Vowels.wav", sample_rate, modified_signal_channel)     # creates the modified song
 
-    if (show_spectro):
-        plot_spectro(column3,".Equalized_Vowels.wav")
-    else:
-        plotting_graphs(column3,signal_x_axis,modified_signal,False)
+#     if (show_spectro):
+#         plot_spectro(column3,".Equalized_Vowels.wav")
+#     else:
+#         plotting_graphs(column3,signal_x_axis,modified_signal,False)
 
-    column2.audio('.piano_timpani_piccolo_out.wav', format='audio/wav')    # displaying the audio before editing
-    column3.audio(".Equalized_Vowels.wav", format='audio/wav')              # displaying the audio after  editing
+#     column2.audio(file, format='audio/wav')    # displaying the audio before editing
+#     column3.audio(".Equalized_Vowels.wav", format='audio/wav')              # displaying the audio after  editing
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def vowels_equalizer(column1, column2, column3, show_spectro):
+def vowels_equalizer(file,column1, column2, column3, show_spectro):
 
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(".piano_timpani_piccolo_out.wav")    # read audio file
+    signal_x_axis, signal_y_axis, sample_rate = read_audio(file)    # read audio file
     
     yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
 
@@ -112,7 +112,7 @@ def vowels_equalizer(column1, column2, column3, show_spectro):
     else:
         plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
 
-    sliders_labels = ['','','','','']
+    sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
     yf = equalizer(yf, points_per_freq, 5, sliders_labels, "Vowels")         #create sliders and modify signal
 
@@ -126,7 +126,7 @@ def vowels_equalizer(column1, column2, column3, show_spectro):
     else:
         plotting_graphs(column3,signal_x_axis,modified_signal,False)
 
-    column2.audio('.piano_timpani_piccolo_out.wav', format='audio/wav')    # displaying the audio before editing
+    column2.audio(file, format='audio/wav')    # displaying the audio before editing
     column3.audio(".Equalized_Vowels.wav", format='audio/wav')              # displaying the audio after  editing
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
@@ -267,7 +267,41 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
         yf[int(points_per_freq*2700):] *= list_of_sliders_values[2]
 
     elif mode == "Vowels":
-        pass
+        # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
+
+         #  Z ranges
+        yf[int(130*points_per_freq):int(240*points_per_freq)] *=  list_of_sliders_values[0]
+        yf[int(350*points_per_freq):int(470*points_per_freq)] *=  list_of_sliders_values[0]
+        yf[int(260*points_per_freq):int(350*points_per_freq)] *=  list_of_sliders_values[0]
+        yf[int(8000*points_per_freq):int(14000*points_per_freq)] *= list_of_sliders_values[0]
+        #/i:/ ranges
+        yf[int(280*points_per_freq):int(360*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(210*points_per_freq):int(280*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(130*points_per_freq):int(210*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(340*points_per_freq):int(470*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(3000*points_per_freq):int(3800*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(5000*points_per_freq):int(6300*points_per_freq)] *= list_of_sliders_values[1]
+        # /e/ ranges
+        #for e 
+        yf[int(342*points_per_freq):int(365*points_per_freq)] *= list_of_sliders_values[2]
+        yf[int(310*points_per_freq):int(330*points_per_freq)] *= list_of_sliders_values[2]
+        yf[int(170*points_per_freq):int(250*points_per_freq)]*= list_of_sliders_values[2]
+        yf[int(685*points_per_freq):int(695*points_per_freq)]*= list_of_sliders_values[2]
+        yf[int(702*points_per_freq):int(720*points_per_freq)] *= list_of_sliders_values[2]
+        yf[int(840*points_per_freq):int(1100*points_per_freq)] *= list_of_sliders_values[2]
+         #/ʊə/ ranges
+         #HAVEN'T BEEN DETECTED YET
+        yf[int(2980*points_per_freq):int(3670*points_per_freq)] *= list_of_sliders_values[3]
+        yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[3]  
+        yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[3] 
+        yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[3] 
+        #F ranges
+        #HAVEN'T BEEN DETECTED YET
+        yf[int(2980*points_per_freq):int(3670*points_per_freq)] *= list_of_sliders_values[4]
+        yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
+        yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
+        yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
+      
 
     elif mode == "Arrhythima":
         yf[int(points_per_freq*0) : int(points_per_freq* 3.5)] *= list_of_sliders_values[0] #row9

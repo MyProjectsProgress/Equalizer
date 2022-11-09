@@ -46,7 +46,9 @@ elif select_mode == "Music":
     fn.musical_instruments_equalizer(column1, column2, column3, show_spectro)
 
 elif select_mode == "Vowels":
-    fn.vowels_equalizer(column1, column2, column3, show_spectro)
+    if uploaded_file:
+        fn.vowels_equalizer(uploaded_file,column1, column2, column3, show_spectro)
+
 
 elif select_mode == "Arrhythima":
     if uploaded_file:
