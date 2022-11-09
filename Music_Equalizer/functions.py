@@ -131,31 +131,72 @@ def vowels_equalizer(column1, column2, column3, show_spectro):
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythima(column1, column2, column3, show_spectro, dataframe):
-
-    # normal beat
-    y1 = dataframe.iloc[0,:186]
+    y1 = dataframe.iloc[12,:290]
     x1 = range(len(y1))
-    plotting_graphs(column2, x1, y1, False)
+    duration=2
+    signal_y_axis=y1.values.flatten() 
+    signal_x_axis=np.array(x1)
+    plotting_graphs(column2,signal_x_axis,signal_y_axis, False)
+    sample_rate=len(signal_y_axis)/duration
+    yf, points_per_freq=fourier_transform(signal_y_axis, sample_rate)
+    xf = rfftfreq(len(signal_y_axis), 1/sample_rate) 
+    points_per_freq = len(xf) / (xf[-1])
 
-    # unknown beat
-    y2 = dataframe.iloc[1,:186]
-    x2 = range(len(y2))
-    plotting_graphs(column3, x2, y2, False)
+    sliders_labels = ['1', '2']
+    yf = equalizer(yf, points_per_freq,2, sliders_labels, "arrhythmia")
+   
+    modified_signal         = irfft(yf)
+    plotting_graphs(column2,signal_x_axis,modified_signal,False)
 
-    # ventriculer etopic beat
-    y3 = dataframe.iloc[2,:186]
-    x3 = range(len(y3))
-    plotting_graphs(column2, x3, y3, False)
 
-    # super ventriculer etopic beat
-    y4 = dataframe.iloc[3,:186]
-    x4 = range(len(y4))
-    plotting_graphs(column3, x4, y4, False)
 
-    # fusion beat
-    y5 = dataframe.iloc[4,:186]
-    x5 = range(len(y5))
-    plotting_graphs(column2, x5, y5, False)
+    # y2 = dataframe.iloc[9,:290]
+    # x2 = range(len(y2))
+    # duration=2
+
+    # signal_y_axis=y2.values.flatten() 
+    # signal_x_axis=np.array(x2)
+    # plotting_graphs(column3,signal_x_axis,signal_y_axis, False)
+    # sample_rate=len(signal_y_axis)/duration
+    # yf, points_per_freq=fourier_transform(signal_y_axis, sample_rate)
+    # xf = rfftfreq(len(signal_y_axis), 1/sample_rate) 
+    # # points_per_freq = len(xf) / (xf[-1])
+    # # yf[int(points_per_freq*0)   :int(points_per_freq* 5.5)] *= 0
+    # sliders_labels = ['1', '2']
+    # yf = equalizer(yf, points_per_freq,2, sliders_labels, "arrhythmia")
+    # modified_signal         = irfft(yf)
+    # plotting_graphs(column3,signal_x_axis,modified_signal,False)
+
+
+    
+   
+    
+
+
+    # # normal beat
+    # y1 = dataframe.iloc[0,:186]
+    # x1 = range(len(y1))
+    # plotting_graphs(column2, x1, y1, False)
+
+    # # unknown beat
+    # y2 = dataframe.iloc[1,:186]
+    # x2 = range(len(y2))
+    # plotting_graphs(column3, x2, y2, False)
+
+    # # ventriculer etopic beat
+    # y3 = dataframe.iloc[2,:186]
+    # x3 = range(len(y3))
+    # plotting_graphs(column2, x3, y3, False)
+
+    # # super ventriculer etopic beat
+    # y4 = dataframe.iloc[3,:186]
+    # x4 = range(len(y4))
+    # plotting_graphs(column3, x4, y4, False)
+
+    # # fusion beat
+    # y5 = dataframe.iloc[4,:186]
+    # x5 = range(len(y5))
+    # plotting_graphs(column2, x5, y5, False)
 
 #-------------------------------------- OPTIONAL ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2, column3, show_spectro):
@@ -229,7 +270,9 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
         pass
 
     elif mode == "Arrhythima":
-        yf[int(points_per_freq*1) : int(points_per_freq* 5)] *= eq_slider
+        yf[int(points_per_freq*0) : int(points_per_freq* 3.5)] *= list_of_sliders_values[0] #row9
+        yf[int(points_per_freq*0) : int(points_per_freq* 5.5)] *= list_of_sliders_values[1] #row12
+        # yf[int(points_per_freq*0) : int(points_per_freq* 3.5)] *= eq_slider
 
     elif mode == "Optional":
         pass
