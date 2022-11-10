@@ -87,3 +87,6 @@ if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != 
 
     column2.audio(uploaded_file, format='audio/wav')    # displaying the audio before editing
     column3.audio(".Equalized_audio.wav", format='audio/wav')              # displaying the audio after  editing
+
+
+#     st.plotly_chart(fig,use_container_width=True)

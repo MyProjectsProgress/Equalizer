@@ -235,3 +235,5 @@ def plot_spectro(title,column,audio_file):
     fig.colorbar(img, ax=ax, format="%+2.f dB")
     plt.title(title)
     column.pyplot(fig)
+
+    #     st.plotly_chart(fig,use_container_width=True)
