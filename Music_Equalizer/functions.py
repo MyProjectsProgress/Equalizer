@@ -149,9 +149,9 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
             yf[int(points_per_freq * 1000 * index)  : int(points_per_freq * 1000 * index + points_per_freq * 1000)] *= value
 
     elif mode == "Music":
-        yf[:int(points_per_freq* 1000)] *= list_of_sliders_values[0]
-        yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1]
-        yf[int(points_per_freq*2600):] *= list_of_sliders_values[2]
+        yf[:int(points_per_freq* 1000)] *= list_of_sliders_values[0] * .35
+        yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1] 
+        yf[int(points_per_freq*2600):] *= list_of_sliders_values[2] * 0.6
 
     elif mode == "Vowels":
         # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
