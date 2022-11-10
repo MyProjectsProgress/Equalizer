@@ -5,8 +5,9 @@
 
 /* Body */
 .main.css-k1vhr4.egzxvld3{
-    background: linear-gradient(90deg, rgba(27,26,26,1) 0%, rgba(46,33,89,1) 35%, rgba(37,33,48,1) 100%);
-    margin-top: -50px;
+    background: linear-gradient(90deg, rgba(37,33,48,1) 0%, rgba(46,33,89,1) 35%, rgba(37,33,48,1) 100%);
+    margin-top: -30px;
+    /* margin-top: -85px; */
     /* overflow: hidden; */
 }
 
@@ -17,7 +18,7 @@
 /* Column 1 */
 
 .css-9t0n7k.e1tzin5v2{
-    background-color: rgb(239, 239, 239);
+    background-color: #efefef;
     padding: 20px;
     /* margin-left: -30px; */
     border-radius: 15px;
@@ -58,20 +59,26 @@
 /* Default */
 .css-ytkq5y.e1tzin5v2{
     background-color:rgb(239, 239, 239);
-    padding: 15px;
+    padding: 0 15px 0 15px;
     min-height: 150px;
     margin: -20px;
     margin-top: 5px;
     align-items: center;
     justify-content: center;
     border-radius: 15px;
+}
+
+.css-ytkq5y.e1tzin5v2 p{
+    transform: translateY(20px);
+    margin-left: 25%;
+    font-weight: 600;
 }
 
 /* Music */
 .css-1r6slb0.e1tzin5v2{
     background-color: rgb(239, 239, 239);
     min-height: 150px;
-    padding: 50px;
+    padding: 0 10px 0 10px;
     margin: -20px;
     margin-top: 5px;
     align-items: center;
@@ -79,16 +86,28 @@
     border-radius: 15px;
 }
 
+.css-1r6slb0.e1tzin5v2 p{
+    transform: translateY(20px);
+    margin-left: 45%;
+    font-weight: 600;
+}
+
 /* Vowels */
 .css-j5r0tf.e1tzin5v2{
     background-color: rgb(239, 239, 239);
     min-height: 150px;
-    padding: 30px;
+    padding: 0 30px 0 30px;
     margin: -20px;
     margin-top: 5px;
     align-items: center;
     justify-content: center;
     border-radius: 15px;
+}
+
+.css-j5r0tf.e1tzin5v2 p{
+    transform: translateY(20px);
+    margin-left: 48%;
+    font-weight: 600;
 }
 
 

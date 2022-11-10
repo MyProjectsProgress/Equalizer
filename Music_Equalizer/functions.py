@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import pandas as pd
 # import streamlit_vertical_slider  as svs
-from scipy.misc import electrocardiogram
+# from scipy.misc import electrocardiogram
 from scipy.fft import rfft, rfftfreq
 from scipy.fft import irfft
 from scipy.io.wavfile import write
@@ -11,123 +11,17 @@ import wave
 import librosa
 import librosa.display
 import IPython.display as ipd
+import os
+import streamlit.components.v1 as components
 
-#-------------------------------------- UNIFORM RANGE MODE ----------------------------------------------------
-def uniform_range_mode(column1, column2, column3,show_spectro):
+#-------------------------------------- Custom Slider ----------------------------------------------------
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(parent_dir, "build")
+_vertical_slider = components.declare_component("vertical_slider", path=build_dir)
 
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(".piano_timpani_piccolo_out.wav")    # Read Audio File
-
-    yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
-
-    if (show_spectro):
-        plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
-    else:
-        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
-
-    sliders_labels = ['0 to 1000 Hz', '1000 to 2000 Hz', '2000 to 3000 Hz','3000 to 4000 Hz',
-    '4000 to 5000 Hz', '5000 to 6000 Hz','6000 to 7000 Hz', '7000 to 8000 Hz', '8000 to 9000 Hz','9000 to 10000 Hz']
-
-    yf = equalizer(yf, points_per_freq, 10, sliders_labels, "Default")      #create sliders and modify signal
-
-    modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders 
-    modified_signal_channel = np.int16(modified_signal) # returns two channels
-
-    write(".Equalized_Music.wav", sample_rate, modified_signal_channel) # creates the modified song
-
-    if (show_spectro):
-        plot_spectro(column3,".Equalized_Music.wav")
-    else:
-        plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
-    column2.audio(".piano_timpani_piccolo_out.wav", format='audio/wav') # displaying the audio before editing
-    column3.audio(".Equalized_Music.wav"          , format='audio/wav') # displaying the audio after editing
-
-#-------------------------------------- MUSICAL INSTRUMENTS EQUALIZER ----------------------------------------------------
-def musical_instruments_equalizer(column1, column2, column3, show_spectro):
-
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(".piano_timpani_piccolo_out.wav")    # read audio file
-
-    yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
-
-    if (show_spectro):
-        plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
-    else:
-        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
-
-    sliders_labels = ['Drums', 'Timpani', 'Piccolo']
-
-    yf = equalizer(yf, points_per_freq, 3, sliders_labels, "Music")         #create sliders and modify signal
-
-    modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
-    modified_signal_channel = np.int16(modified_signal) # returns two channels 
-
-    write(".Equalized_Music.wav", sample_rate, modified_signal_channel)     # creates the modified song
-
-    if (show_spectro):
-        plot_spectro(column3,".Equalized_Music.wav")
-    else:
-        plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
-    column2.audio('.piano_timpani_piccolo_out.wav', format='audio/wav')    # displaying the audio before editing
-    column3.audio(".Equalized_Music.wav", format='audio/wav')              # displaying the audio after  editing
-
-#-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-# def vowels_equalizer(file,column1, column2, column3, show_spectro):
-
-#     signal_x_axis, signal_y_axis, sample_rate = read_audio(file)    # read audio file
-    
-#     yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
-
-#     if (show_spectro):
-#         plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
-#     else:
-#         plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
-
-#     sliders_labels = ['','','','','']
-
-#     yf = equalizer(yf, points_per_freq, 5, sliders_labels, "Vowels")         #create sliders and modify signal
-
-#     modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
-#     modified_signal_channel = np.int16(modified_signal) # returns two channels 
-
-#     write(".Equalized_Vowels.wav", sample_rate, modified_signal_channel)     # creates the modified song
-
-#     if (show_spectro):
-#         plot_spectro(column3,".Equalized_Vowels.wav")
-#     else:
-#         plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
-#     column2.audio(file, format='audio/wav')    # displaying the audio before editing
-#     column3.audio(".Equalized_Vowels.wav", format='audio/wav')              # displaying the audio after  editing
-
-#-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def vowels_equalizer(file,column1, column2, column3, show_spectro):
-
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(file)    # read audio file
-    
-    yf, points_per_freq = fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
-
-    if (show_spectro):
-        plot_spectro(column2,'.piano_timpani_piccolo_out.wav')
-    else:
-        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
-
-    sliders_labels = ['Z','/i:/','/e/','ʊə','F']
-
-    yf = equalizer(yf, points_per_freq, 5, sliders_labels, "Vowels")         #create sliders and modify signal
-
-    modified_signal         = irfft(yf)                 # returns the inverse transform after modifying it with sliders
-    modified_signal_channel = np.int16(modified_signal) # returns two channels 
-
-    write(".Equalized_Vowels.wav", sample_rate, modified_signal_channel)     # creates the modified song
-
-    if (show_spectro):
-        plot_spectro(column3,".Equalized_Vowels.wav")
-    else:
-        plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
-    column2.audio(file, format='audio/wav')    # displaying the audio before editing
-    column3.audio(".Equalized_Vowels.wav", format='audio/wav')              # displaying the audio after  editing
+def vertical_slider(key=None):
+    slider_value = _vertical_slider(key=key ,default=1)
+    return slider_value
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythima(column1, column2, column3, show_spectro, dataframe):
@@ -136,7 +30,7 @@ def arrhythima(column1, column2, column3, show_spectro, dataframe):
     duration=2
     signal_y_axis=y1.values.flatten() 
     signal_x_axis=np.array(x1)
-    plotting_graphs(column2,signal_x_axis,signal_y_axis, False)
+    plotting_graphs('original',column2,signal_x_axis,signal_y_axis, False)
     sample_rate=len(signal_y_axis)/duration
     yf, points_per_freq=fourier_transform(signal_y_axis, sample_rate)
     xf = rfftfreq(len(signal_y_axis), 1/sample_rate) 
@@ -144,9 +38,9 @@ def arrhythima(column1, column2, column3, show_spectro, dataframe):
 
     sliders_labels = ['1', '2']
     yf = equalizer(yf, points_per_freq,2, sliders_labels, "arrhythmia")
-   
+
     modified_signal         = irfft(yf)
-    plotting_graphs(column2,signal_x_axis,modified_signal,False)
+    plotting_graphs('Modified',column2,signal_x_axis,modified_signal,False)
 
 
 
@@ -166,11 +60,6 @@ def arrhythima(column1, column2, column3, show_spectro, dataframe):
     # yf = equalizer(yf, points_per_freq,2, sliders_labels, "arrhythmia")
     # modified_signal         = irfft(yf)
     # plotting_graphs(column3,signal_x_axis,modified_signal,False)
-
-
-    
-   
-    
 
 
     # # normal beat
@@ -204,9 +93,9 @@ def voice_changer(uploaded_file, column1, column2, column3, show_spectro):
     signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
 
     if (show_spectro):
-        plot_spectro(column2, uploaded_file.name)
+        plot_spectro('original',column2, uploaded_file.name)
     else:
-        plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
+        plotting_graphs('original',column2,signal_x_axis,signal_y_axis,False)
 
     voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
 
@@ -245,17 +134,15 @@ def fourier_transform(signal_y_axis, sample_rate):
 #-------------------------------------- Create Sliders & Modify Signal ----------------------------------------------------
 def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
 
-    if n_sliders > 1:
-        columns=st.columns(n_sliders)
-        counter=0
-        list_of_sliders_values = []
-        while counter < n_sliders:
-            with columns[counter]:
-                sliders = (st.slider(label=sliders_labels[counter],key=counter, min_value=0, max_value=10,value=1, step=1))
-            counter +=1
-            list_of_sliders_values.append(sliders)
-    else:
-        eq_slider = st.slider(label=sliders_labels, min_value=0, max_value=10, value=1, step=1)
+    columns=st.columns(n_sliders)
+    counter=0
+    list_of_sliders_values = []
+    while counter < n_sliders:
+        with columns[counter]:
+            st.write(sliders_labels[counter])
+            sliders = (vertical_slider(counter))
+        counter +=1
+        list_of_sliders_values.append(sliders)
 
     if mode == "Default":
         for index,value in enumerate(list_of_sliders_values):
@@ -264,12 +151,12 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
     elif mode == "Music":
         yf[:int(points_per_freq* 1000)] *= list_of_sliders_values[0]
         yf[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1]
-        yf[int(points_per_freq*2700):] *= list_of_sliders_values[2]
+        yf[int(points_per_freq*2600):] *= list_of_sliders_values[2]
 
     elif mode == "Vowels":
         # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
-         #  Z ranges
+        #  Z ranges
         yf[int(130*points_per_freq):int(240*points_per_freq)] *=  list_of_sliders_values[0]
         yf[int(350*points_per_freq):int(470*points_per_freq)] *=  list_of_sliders_values[0]
         yf[int(260*points_per_freq):int(350*points_per_freq)] *=  list_of_sliders_values[0]
@@ -289,8 +176,8 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
         yf[int(685*points_per_freq):int(695*points_per_freq)]*= list_of_sliders_values[2]
         yf[int(702*points_per_freq):int(720*points_per_freq)] *= list_of_sliders_values[2]
         yf[int(840*points_per_freq):int(1100*points_per_freq)] *= list_of_sliders_values[2]
-         #/ʊə/ ranges
-         #HAVEN'T BEEN DETECTED YET
+        #/ʊə/ ranges
+        #HAVEN'T BEEN DETECTED YET
         yf[int(2980*points_per_freq):int(3670*points_per_freq)] *= list_of_sliders_values[3]
         yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[3]  
         yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[3] 
@@ -301,7 +188,7 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
         yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
         yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
         yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
-      
+
 
     elif mode == "Arrhythima":
         yf[int(points_per_freq*0) : int(points_per_freq* 3.5)] *= list_of_sliders_values[0] #row9
@@ -325,10 +212,11 @@ def read_audio(audio_file):
     return signal_x_axis, signal_y_axis, sample_rate
 
 #-------------------------------------- PLOTING Time Graph ----------------------------------------------------
-def plotting_graphs(column,x_axis,y_axis,flag):
+def plotting_graphs(title,column,x_axis,y_axis,flag):
     fig, axs = plt.subplots()
     fig.set_size_inches(6,3)
     plt.plot(x_axis,y_axis)
+    plt.title(title)
     if flag == True:
         plt.xlim(45, 55)
         plt.xlabel("Time in s")
@@ -336,12 +224,14 @@ def plotting_graphs(column,x_axis,y_axis,flag):
     column.pyplot(fig)
 
 #-------------------------------------- PLOTING Spectrogram ----------------------------------------------------
-def plot_spectro(column,audio_file):
+def plot_spectro(title,column,audio_file):
     y, sr = librosa.load(audio_file)
     D = librosa.stft(y)  # STFT of y
     S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
     fig, ax = plt.subplots()
+    fig.set_size_inches(6,3)
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
     ax.set(title='')
     fig.colorbar(img, ax=ax, format="%+2.f dB")
+    plt.title(title)
     column.pyplot(fig)
