@@ -13,7 +13,7 @@ import librosa.display
 import IPython.display as ipd
 import os
 import streamlit.components.v1 as components
-
+from scipy import signal
 #-------------------------------------- Custom Slider ----------------------------------------------------
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(parent_dir, "build")
@@ -22,6 +22,20 @@ _vertical_slider = components.declare_component("vertical_slider", path=build_di
 def vertical_slider(key=None):
     slider_value = _vertical_slider(key=key ,default=1)
     return slider_value
+
+
+#-------------------------------------- window function for vowels--------------------------------------
+def triangle_window(yf, start, end, val, points_per_freq ):
+    target_freq = yf[int(start* points_per_freq):int(end*points_per_freq)]
+    if val==0:
+        window = -(signal.windows.triang(len(target_freq))-1)
+    elif val ==1:
+            return target_freq 
+
+    else:
+        window= val* signal.windows.triang(len(target_freq))
+    return [target_freq[i]*window[i] for i in range(len(window))]    
+
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythima(column1, column2, column3, show_spectro, dataframe):
@@ -157,37 +171,37 @@ def equalizer(yf,points_per_freq,n_sliders,sliders_labels,mode):
         # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
         #  Z ranges
-        yf[int(130*points_per_freq):int(240*points_per_freq)] *=  list_of_sliders_values[0]
-        yf[int(350*points_per_freq):int(470*points_per_freq)] *=  list_of_sliders_values[0]
-        yf[int(260*points_per_freq):int(350*points_per_freq)] *=  list_of_sliders_values[0]
-        yf[int(8000*points_per_freq):int(14000*points_per_freq)] *= list_of_sliders_values[0]
+        yf[int(130*points_per_freq):int(240*points_per_freq)] = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq) 
+        yf[int(350*points_per_freq):int(470*points_per_freq)] =  triangle_window(yf, 350,470, list_of_sliders_values[0], points_per_freq) [0]
+        yf[int(260*points_per_freq):int(350*points_per_freq)] =   triangle_window(yf, 260,350, list_of_sliders_values[0], points_per_freq) 
+        yf[int(8000*points_per_freq):int(14000*points_per_freq)] = triangle_window(yf, 8000,14000, list_of_sliders_values[0], points_per_freq) 
         #/i:/ ranges
-        yf[int(280*points_per_freq):int(360*points_per_freq)] *= list_of_sliders_values[1]
-        yf[int(210*points_per_freq):int(280*points_per_freq)] *= list_of_sliders_values[1]
-        yf[int(130*points_per_freq):int(210*points_per_freq)] *= list_of_sliders_values[1]
-        yf[int(340*points_per_freq):int(470*points_per_freq)] *= list_of_sliders_values[1]
-        yf[int(3000*points_per_freq):int(3800*points_per_freq)] *= list_of_sliders_values[1]
-        yf[int(5000*points_per_freq):int(6300*points_per_freq)] *= list_of_sliders_values[1]
+        yf[int(280*points_per_freq):int(360*points_per_freq)]  = triangle_window(yf, 280,360, list_of_sliders_values[1], points_per_freq) 
+        yf[int(210*points_per_freq):int(280*points_per_freq)]  = triangle_window(yf, 210,280, list_of_sliders_values[1], points_per_freq)
+        yf[int(130*points_per_freq):int(210*points_per_freq)]  = triangle_window(yf, 130,210, list_of_sliders_values[1], points_per_freq)
+        yf[int(340*points_per_freq):int(470*points_per_freq)]  = triangle_window(yf, 340,470, list_of_sliders_values[1], points_per_freq)
+        yf[int(3000*points_per_freq):int(3800*points_per_freq)]  = triangle_window(yf, 3000,3800, list_of_sliders_values[1], points_per_freq)
+        yf[int(5000*points_per_freq):int(6300*points_per_freq)]  = triangle_window(yf, 5000,6300, list_of_sliders_values[1], points_per_freq)
         # /e/ ranges
         #for e 
-        yf[int(342*points_per_freq):int(365*points_per_freq)] *= list_of_sliders_values[2]
-        yf[int(310*points_per_freq):int(330*points_per_freq)] *= list_of_sliders_values[2]
-        yf[int(170*points_per_freq):int(250*points_per_freq)]*= list_of_sliders_values[2]
-        yf[int(685*points_per_freq):int(695*points_per_freq)]*= list_of_sliders_values[2]
-        yf[int(702*points_per_freq):int(720*points_per_freq)] *= list_of_sliders_values[2]
-        yf[int(840*points_per_freq):int(1100*points_per_freq)] *= list_of_sliders_values[2]
+        yf[int(342*points_per_freq):int(365*points_per_freq)]  = triangle_window(yf, 342,365, list_of_sliders_values[2], points_per_freq)
+        yf[int(310*points_per_freq):int(330*points_per_freq)] = triangle_window(yf, 310,330, list_of_sliders_values[2], points_per_freq)
+        # yf[int(170*points_per_freq):int(250*points_per_freq)] = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq)
+        # yf[int(685*points_per_freq):int(695*points_per_freq)] = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq)
+        # yf[int(702*points_per_freq):int(720*points_per_freq)]  = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq)
+        # yf[int(840*points_per_freq):int(1100*points_per_freq)]  = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq)
         #/ʊə/ ranges
         #HAVEN'T BEEN DETECTED YET
-        yf[int(2980*points_per_freq):int(3670*points_per_freq)] *= list_of_sliders_values[3]
-        yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[3]  
-        yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[3] 
-        yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[3] 
+        yf[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(yf, 2980,3670, list_of_sliders_values[3], points_per_freq)
+        # yf[int(3670*points_per_freq):int(4740*points_per_freq)]   = triangle_window(yf, 130,240, list_of_sliders_values[0], points_per_freq)
+        yf[int(140*points_per_freq):int(308*points_per_freq)]  = triangle_window(yf, 140,308, list_of_sliders_values[3], points_per_freq)
+        yf[int(320*points_per_freq):int(370*points_per_freq)]  = triangle_window(yf, 320,370, list_of_sliders_values[3], points_per_freq)
         #F ranges
         #HAVEN'T BEEN DETECTED YET
-        yf[int(2980*points_per_freq):int(3670*points_per_freq)] *= list_of_sliders_values[4]
-        yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
-        yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
-        yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
+        yf[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(yf, 2980,3670, list_of_sliders_values[4], points_per_freq)
+        # yf[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
+        # yf[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
+        # yf[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
 
 
     elif mode == "Arrhythima":
