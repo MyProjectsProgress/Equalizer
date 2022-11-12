@@ -14,6 +14,18 @@ import IPython.display as ipd
 import os
 import streamlit.components.v1 as components
 from scipy import signal
+import time
+import altair as alt
+import pandas as pd
+import wavio
+
+class variabls:
+    
+    points_num=1000
+    start=0
+    vowel_freq_ae=[860,2850]
+    vowel_freq_a=[850,2800]
+    slider_tuble=(vowel_freq_ae,vowel_freq_a)
 #-------------------------------------- Custom Slider ----------------------------------------------------
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(parent_dir, "build")
@@ -251,3 +263,57 @@ def plot_spectro(title,column,audio_file):
     column.pyplot(fig)
 
     #     st.plotly_chart(fig,use_container_width=True)
+
+def plot_animation(df):
+    brush = alt.selection_interval()
+    chart1 = alt.Chart(df).mark_line().encode(
+            x=alt.X('time', axis=alt.Axis(title='Time')),
+            # y=alt.Y('amplitude', axis=alt.Axis(title='Amplitude')),
+        ).properties(
+            width=500,
+            height=300
+        ).add_selection(
+            brush
+        ).interactive()
+    
+    figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(
+            brush)
+    return figure
+def Dynamic_graph( signal_x_axis, signal_y_axis,signal_x_axis1, signal_y_axis1,column2,column3):
+        df = pd.DataFrame({'time': signal_x_axis[::30], 'amplitude': signal_y_axis[:: 30], 'amplitude after processing': signal_y_axis1[::30]}, columns=['time', 'amplitude','amplitude after processing'])
+
+        lines = plot_animation(df)
+        line_plot = st.altair_chart(lines)
+        col1,col2,col3,col4 = st.columns(4)
+        start_btn  = col1.button(label='Start')
+        pause_btn  = col2.button(label='Pause')
+        resume_btn = col3.button(label='resume')
+        # stop_btn   = col4.button(label='Stop')
+
+        N = df.shape[0]  # number of elements in the dataframe
+        burst = 10       # number of elements  to add to the plot
+        size = burst     # size of the current dataset
+
+        if start_btn:
+          
+            for i in range(1, N):
+                variabls.start=i
+                step_df = df.iloc[0:size]
+                with column2:
+                    lines = plot_animation(step_df)
+                    line_plot = line_plot.altair_chart(lines)
+                    size = i * burst 
+                    print('start')                    
+
+        if resume_btn: 
+            for i in range( variabls.start,N):
+                variabls.start=i
+                step_df = df.iloc[0:size]
+                with column3:
+                    lines = plot_animation(step_df)
+                    line_plot = line_plot.altair_chart(lines)
+                    size = i * burst
+                    print('resume')                
+
+        if pause_btn:
+            print('pause')  
