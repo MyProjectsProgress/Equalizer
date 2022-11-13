@@ -17,15 +17,15 @@ from scipy import signal
 import time
 import altair as alt
 import pandas as pd
-import wavio
 
 class variabls:
-    
+
     points_num=1000
     start=0
     vowel_freq_ae=[860,2850]
     vowel_freq_a=[850,2800]
     slider_tuble=(vowel_freq_ae,vowel_freq_a)
+
 #-------------------------------------- Custom Slider ----------------------------------------------------
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 build_dir = os.path.join(parent_dir, "build")
@@ -34,7 +34,6 @@ _vertical_slider = components.declare_component("vertical_slider", path=build_di
 def vertical_slider(key=None):
     slider_value = _vertical_slider(key=key ,default=1)
     return slider_value
-
 
 #-------------------------------------- window function for vowels--------------------------------------
 def triangle_window(yf, start, end, val, points_per_freq ):
@@ -114,7 +113,7 @@ def arrhythima(column1, column2, column3, show_spectro, dataframe):
     # plotting_graphs(column2, x5, y5, False)
 
 #-------------------------------------- OPTIONAL ----------------------------------------------------
-def voice_changer(uploaded_file, column1, column2, column3, show_spectro):
+def voice_changer(uploaded_file, column1, column2, show_spectro):
 
     signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
 
@@ -149,7 +148,7 @@ def voice_changer(uploaded_file, column1, column2, column3, show_spectro):
 
     song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
     empty.write(song)
-
+    
 #-------------------------------------- Fourier Transfrom ----------------------------------------------------
 def fourier_transform(signal_y_axis, sample_rate):
     yf = rfft(signal_y_axis)                                # returns complex numbers of the y axis in the data frame
@@ -250,28 +249,33 @@ def plotting_graphs(title,column,x_axis,y_axis,flag):
     column.pyplot(fig)
 
 #-------------------------------------- PLOTING Spectrogram ----------------------------------------------------
-def plot_spectro(title,column,audio_file):
-    y, sr = librosa.load(audio_file)
-    D = librosa.stft(y)  # STFT of y
-    S_db = librosa.amplitude_to_db(np.abs(D), ref=np.max)
-    fig, ax = plt.subplots()
-    fig.set_size_inches(6,3)
-    img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
-    ax.set(title='')
-    fig.colorbar(img, ax=ax, format="%+2.f dB")
-    plt.title(title)
-    column.pyplot(fig)
+def plot_spectro(original_audio,modified_audio):
+    
+    y1, sr = librosa.load(original_audio)
+    y2, sr = librosa.load(modified_audio)
+    D1 = librosa.stft(y1)             # STFT of y
+    S_db1 = librosa.amplitude_to_db(np.abs(D1), ref=np.max)
+    D2 = librosa.stft(y2)             # STFT of y
+    S_db2 = librosa.amplitude_to_db(np.abs(D2), ref=np.max)
 
-    #     st.plotly_chart(fig,use_container_width=True)
+    fig= plt.figure(figsize=[15,10])
+    plt.subplot(2,2,1)
+    img1 = librosa.display.specshow(S_db1, x_axis='time', y_axis='linear')
+    plt.subplot(2,2,2)
+    img2 = librosa.display.specshow(S_db2, x_axis='time', y_axis='linear')
+    # fig.colorbar(img1, format="%+2.f dB")
+    # fig.colorbar(img2, format="%+2.f dB")
 
+    st.pyplot(fig)
+
+#-------------------------------------- Plot Dynamic ----------------------------------------------------
 def plot_animation(df):
-    brush = alt.selection_interval()
+    brush  = alt.selection_interval ()
     chart1 = alt.Chart(df).mark_line().encode(
             x=alt.X('time', axis=alt.Axis(title='Time')),
-            # y=alt.Y('amplitude', axis=alt.Axis(title='Amplitude')),
         ).properties(
-            width=500,
-            height=300
+            width=414,
+            height=250
         ).add_selection(
             brush
         ).interactive()
@@ -279,41 +283,37 @@ def plot_animation(df):
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(
             brush)
     return figure
-def Dynamic_graph( signal_x_axis, signal_y_axis,signal_x_axis1, signal_y_axis1,column2,column3):
-        df = pd.DataFrame({'time': signal_x_axis[::30], 'amplitude': signal_y_axis[:: 30], 'amplitude after processing': signal_y_axis1[::30]}, columns=['time', 'amplitude','amplitude after processing'])
+
+
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn):
+        df = pd.DataFrame({'time': signal_x_axis[::200], 'amplitude': signal_y_axis[:: 200], 'amplitude after processing': signal_y_axis1[::200]}, columns=['time', 'amplitude','amplitude after processing'])
 
         lines = plot_animation(df)
         line_plot = st.altair_chart(lines)
-        col1,col2,col3,col4 = st.columns(4)
-        start_btn  = col1.button(label='Start')
-        pause_btn  = col2.button(label='Pause')
-        resume_btn = col3.button(label='resume')
-        # stop_btn   = col4.button(label='Stop')
 
         N = df.shape[0]  # number of elements in the dataframe
         burst = 10       # number of elements  to add to the plot
         size = burst     # size of the current dataset
 
         if start_btn:
-          
             for i in range(1, N):
                 variabls.start=i
                 step_df = df.iloc[0:size]
-                with column2:
-                    lines = plot_animation(step_df)
-                    line_plot = line_plot.altair_chart(lines)
-                    size = i * burst 
-                    print('start')                    
+                lines = plot_animation(step_df)
+                line_plot = line_plot.altair_chart(lines)
+                variabls.graph_size=size
+                size = i * burst 
 
         if resume_btn: 
             for i in range( variabls.start,N):
                 variabls.start=i
-                step_df = df.iloc[0:size]
-                with column3:
-                    lines = plot_animation(step_df)
-                    line_plot = line_plot.altair_chart(lines)
-                    size = i * burst
-                    print('resume')                
+                step_df     = df.iloc[0:size]
+                lines       = plot_animation(step_df)
+                line_plot   = line_plot.altair_chart(lines)
+                variabls.graph_size=size
+                size = i * burst
 
         if pause_btn:
-            print('pause')  
+            step_df = df.iloc[0:variabls.graph_size]
+            lines = plot_animation(step_df)
+            line_plot = line_plot.altair_chart(lines)
