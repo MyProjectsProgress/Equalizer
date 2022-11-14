@@ -23,9 +23,9 @@ with column1:
 
 uploaded_file = column1.file_uploader(label="", type = ['csv',".wav"])
 
-select_mode = column1.selectbox("Mode",[ "Default","Music", "Vowels", "Arrhythima", "Optional"])
+select_mode   = column1.selectbox("Mode", ["Default","Music", "Vowels", "Arrhythima", "Voice Tone Changer"])
 
-show_spectro = column1.checkbox("Show Spectrogram")
+show_spectro  = column1.checkbox("Show Spectrogram")
 
 # ------------------------------------------------------------------- GETTING FILE EXTENSION --------------------------------------------------
 if uploaded_file is not None:
@@ -36,42 +36,41 @@ if uploaded_file is not None:
 #-------------------------------------------------------------------- CHOOSING MODE -----------------------------------------------------------
 if select_mode == "Default":
     uploaded_file = ".piano_timpani_piccolo_out.wav"
-    file_name = ".piano_timpani_piccolo_out.wav"
-    n = 10
+    file_name     = ".piano_timpani_piccolo_out.wav"
+    number_of_sliders = 10
     sliders_labels = ['0 to 1k Hz', '1k to 2k Hz', '2k to 3k Hz','3k to 4k Hz',
     '4k to 5k Hz', '5k to 6k Hz','6k to 7k Hz', '7k to 8k Hz', '8k to 9k Hz','9k to 10k Hz']
 
 elif select_mode == "Music":
-    n = 3
+    number_of_sliders = 3
     sliders_labels = ['Drums', 'Timpani', 'Piccolo']
 
 elif select_mode == "Vowels":
-    n = 5
+    number_of_sliders = 5
     sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
 
 elif select_mode == "Arrhythima":
+    fn.arrhythima(column2, column1)
 
- fn.arrhythima(column2, column1 ,show_spectro)
-
-elif select_mode == "Optional":
+elif select_mode == "Voice Tone Changer":
     if uploaded_file:
-        fn.voice_changer(uploaded_file, column1, column2, show_spectro)
+        fn.voice_changer(uploaded_file, column1, column2)
 
 #--------------------------------------------------------------------- MAIN FUNCTION ---------------------------------------------------------
 
-if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != "Optional":
+if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != "Voice Tone Changer":
 
-    signal_x_axis, signal_y_axis, sample_rate = fn.read_audio(uploaded_file)       # read audio file
+    signal_x_axis, signal_y_axis, sample_rate = fn.read_audio(uploaded_file)                            # read audio file
 
-    y_fourier, points_per_freq = fn.fourier_transform(signal_y_axis, sample_rate)         # Fourier Transfrom
+    y_fourier, points_per_freq = fn.fourier_transform(signal_y_axis, sample_rate)                       # Fourier Transfrom
 
-    y_fourier = fn.f_ranges(y_fourier, points_per_freq, n, sliders_labels, select_mode)         #create sliders and modify signal
+    y_fourier = fn.f_ranges(y_fourier, points_per_freq, number_of_sliders, sliders_labels, select_mode) # create sliders and modify signal
 
-    modified_signal         = irfft(y_fourier)                                            # returns the inverse transform after modifying it with sliders
-    modified_signal_channel = np.int16(modified_signal)                            # returns two channels 
+    modified_signal         = irfft(y_fourier)                           # returns the inverse transform after modifying it with sliders
+    modified_signal_channel = np.int16(modified_signal)                  # returns two channels 
 
-    write(".Equalized_audio.wav", sample_rate, modified_signal_channel)            # creates the modified song
+    write(".Equalized_audio.wav", sample_rate, modified_signal_channel)  # creates the modified song
 
     with column2:
         if (show_spectro):
@@ -84,5 +83,5 @@ if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != 
             fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,start_btn,pause_btn,resume_btn)
 
 
-    # column2.audio(uploaded_file, format='audio/wav')                             # displaying the audio before editing
-    column2.audio(".Equalized_audio.wav", format='audio/wav')                      # displaying the audio after  editing
+    # column2.audio(uploaded_file, format='audio/wav')         # displaying the audio before editing
+    column2.audio(".Equalized_audio.wav", format='audio/wav')  # displaying the audio after  editing

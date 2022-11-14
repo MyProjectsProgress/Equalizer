@@ -18,7 +18,7 @@ from scipy import signal
 import altair as alt
 import pandas as pd
 
-class variabls:
+class Variables:
 
     points_num=1000
     start=0
@@ -42,46 +42,34 @@ def triangle_window(y_fourier, start, end, val, points_per_freq ):
         window = -(signal.windows.triang(len(target_freq))-1)
     elif val ==1:
             return target_freq 
-
     else:
         window= val* signal.windows.triang(len(target_freq))
     return [target_freq[i]*window[i] for i in range(len(window))]    
 
-
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def arrhythima( column2, column3, show_spectro):
-    ecg = electrocardiogram()       # Calling the arrhythmia database of a woman
-    fs = 360                        # determining f sample
-    time = np.arange(ecg.size) / fs # detrmining time axis
+def arrhythima( column2, column3):
+    ecg_dataset        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
+    sampling_frequency = 360                                                        # determining f sample
+    time               = np.arange(ecg_dataset.size) / sampling_frequency           # detrmining time axis
 
-    y_fourier, points_per_freq = fourier_transform(ecg, fs)         # Fourier Transfrom
+    y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
 
-    sliders_labels = 'Arrhythima'
+    sliders_labels = 'Arrhythima' 
 
-    y_fourier = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythima")
+    y_fourier      = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythima")
 
-    if (show_spectro):
-        pass
-    else:
-        plotting_graphs("Original ECG",column2,time,ecg, True)
+    plotting_graphs("Original ecg_dataset", column2, time, ecg_dataset, True)
 
     modified_signal = irfft(y_fourier) 
 
-    if (show_spectro):
-        pass
-    else:
-        plotting_graphs("Modified ECG",column3, time, modified_signal, True)
+    plotting_graphs("Modified ecg_dataset", column3, time, modified_signal, True)
 
-
-#-------------------------------------- OPTIONAL ----------------------------------------------------
-def voice_changer(uploaded_file, column1, column2, show_spectro):
+#-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
+def voice_changer(uploaded_file, column1, column2):
 
     signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
 
-    if (show_spectro):
-        plot_spectro('original',column2, uploaded_file.name)
-    else:
-        plotting_graphs('original',column2,signal_x_axis,signal_y_axis,False)
+    plotting_graphs  ('original', column2, signal_x_axis, signal_y_axis, False)
 
     voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
 
@@ -90,56 +78,51 @@ def voice_changer(uploaded_file, column1, column2, show_spectro):
     if voice == "Deep Voice":
         empty = column2.empty()
         empty.empty()
-        speed_rate = 1.4
+        speed_rate           = 1.4
         sampling_rate_factor = 1.4
 
     elif voice == "Smooth Voice":
         empty = column2.empty()
         empty.empty()
-        speed_rate = 0.5
+        speed_rate           = 0.5
         sampling_rate_factor = 0.5
 
     loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
     loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate=speed_rate)
-
-    # if (show_spectro):
-    #     plot_spectro(column2, uploaded_file.name)
-    # else:
-    #     plotting_graphs(column2,signal_x_axis,signal_y_axis,False)
 
     song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
     empty.write(song)
     
 #-------------------------------------- FOURIER TRANSFORM ----------------------------------------------------
 def fourier_transform(signal_y_axis, sample_rate):
-    y_fourier = rfft(signal_y_axis)                                # returns complex numbers of the y axis in the data frame
-    x_fourier = rfftfreq(len(signal_y_axis), 1/sample_rate)        # returns the frequency x axis after fourier transform
-    points_per_freq = len(x_fourier) / (x_fourier[-1])                    # duration
+    y_fourier       = rfft(signal_y_axis)                                # returns complex numbers of the y axis in the data frame
+    x_fourier       = rfftfreq(len(signal_y_axis), 1/sample_rate)        # returns the frequency x axis after fourier transform
+    points_per_freq = len(x_fourier) / (x_fourier[-1])                   # duration
     return y_fourier, points_per_freq
 
 #-------------------------------------- CREATE SLIDERS & MODIFY SIGNALS ----------------------------------------------------
 def f_ranges(y_fourier,points_per_freq,n_sliders,sliders_labels,mode):
 
-    columns=st.columns(n_sliders)
-    counter=0
+    columns = st.columns(n_sliders)
+    counter = 0
     list_of_sliders_values = []
     while counter < n_sliders:
         with columns[counter]:
             st.write(sliders_labels[counter])
             sliders = (vertical_slider(counter))
-        counter +=1
+        counter += 1
         list_of_sliders_values.append(sliders)
 
-    if mode == "Default":
+    if   mode == "Default":
         for index,value in enumerate(list_of_sliders_values):
             y_fourier[int(points_per_freq * 1000 * index)  : int(points_per_freq * 1000 * index + points_per_freq * 1000)] *= value
 
-    elif mode == "Music":
-        y_fourier[:int(points_per_freq* 1000)] *= list_of_sliders_values[0] * .35
-        y_fourier[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1] 
-        y_fourier[int(points_per_freq*2600):] *= list_of_sliders_values[2] * 0.6
+    elif mode == "Music"  :
+        y_fourier[                         :int(points_per_freq* 1000)] *= list_of_sliders_values[0] * .35
+        y_fourier[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1]
+        y_fourier[int(points_per_freq*2600):                          ] *= list_of_sliders_values[2] * 0.6
 
-    elif mode == "Vowels":
+    elif mode == "Vowels" :
         # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
         #  Z ranges
@@ -175,12 +158,10 @@ def f_ranges(y_fourier,points_per_freq,n_sliders,sliders_labels,mode):
         # y_fourier[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
         # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
 
-
     elif mode == "Arrhythima":
         y_fourier[int(points_per_freq*0) : int(points_per_freq* 5)] *= list_of_sliders_values[0] 
-        # y_fourier[int(points_per_freq*0) : int(points_per_freq* 3.5)] *= eq_slider
 
-    elif mode == "Optional":
+    elif mode == "Voice Tone Changer":
         pass
 
     return y_fourier
@@ -196,27 +177,15 @@ def read_audio(audio_file):
     signal_x_axis = np.linspace(0, duration, len(signal_y_axis))
     return signal_x_axis, signal_y_axis, sample_rate
 
-#-------------------------------------- PLOTTING TIME GRAPH ----------------------------------------------------
-def plotting_graphs(title,column,x_axis,y_axis,flag):
-    fig, axs = plt.subplots()
-    fig.set_size_inches(6,3)
-    plt.plot(x_axis,y_axis)
-    plt.title(title)
-    if flag == True:
-        plt.xlim(45, 55)
-        plt.xlabel("Time in s")
-        plt.ylabel("ECG in mV")
-    column.pyplot(fig)
-
 #-------------------------------------- PLOTTING SPECTROGRAM ----------------------------------------------------
-def plot_spectro(original_audio,modified_audio):
+def plot_spectro(original_audio, modified_audio):
     
     y1, sr = librosa.load(original_audio)
     y2, sr = librosa.load(modified_audio)
-    D1 = librosa.stft(y1)             # STFT of y
-    S_db1 = librosa.amplitude_to_db(np.abs(D1), ref=np.max)
-    D2 = librosa.stft(y2)             # STFT of y
-    S_db2 = librosa.amplitude_to_db(np.abs(D2), ref=np.max)
+    D1     = librosa.stft(y1)             # STFT of y
+    S_db1  = librosa.amplitude_to_db(np.abs(D1), ref=np.max)
+    D2     = librosa.stft(y2)             # STFT of y
+    S_db2  = librosa.amplitude_to_db(np.abs(D2), ref=np.max)
 
     fig= plt.figure(figsize=[15,10])
     plt.subplot(2,2,1)
@@ -231,49 +200,52 @@ def plot_spectro(original_audio,modified_audio):
 #-------------------------------------- DYNAMIC PLOTTING ----------------------------------------------------
 def plot_animation(df):
     brush  = alt.selection_interval ()
-    chart1 = alt.Chart(df).mark_line().encode(
-            x=alt.X('time', axis=alt.Axis(title='Time')),
-        ).properties(
-            width=414,
-            height=250
-        ).add_selection(
-            brush
-        ).interactive()
-    
-    figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(
-            brush)
+    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=250).add_selection(brush).interactive()
+    figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-
 def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn):
+
         df = pd.DataFrame({'time': signal_x_axis[::200], 'amplitude': signal_y_axis[:: 200], 'amplitude after processing': signal_y_axis1[::200]}, columns=['time', 'amplitude','amplitude after processing'])
 
-        lines = plot_animation(df)
-        line_plot = st.altair_chart(lines)
+        lines       = plot_animation(df)
+        line_plot   = st.altair_chart(lines)
 
-        df_elements = df.shape[0]  # number of elements in the dataframe
-        burst = 10       # number of elements  to add to the plot
-        size = burst     # size of the current dataset
+        df_elements = df.shape[0] # number of elements in the dataframe
+        burst       = 10          # number of elements  to add to the plot
+        size        = burst       # size of the current dataset
 
         if start_btn:
             for i in range(1, df_elements):
-                variabls.start=i
-                step_df = df.iloc[0:size]
-                lines = plot_animation(step_df)
-                line_plot = line_plot.altair_chart(lines)
-                variabls.graph_size=size
-                size = i * burst 
+                Variables.start      = i
+                step_df              = df.iloc[0:size]
+                lines                = plot_animation(step_df)
+                line_plot            = line_plot.altair_chart(lines)
+                Variables.graph_size = size
+                size                 = i * burst 
 
         if resume_btn: 
-            for i in range( variabls.start,df_elements):
-                variabls.start=i
-                step_df     = df.iloc[0:size]
-                lines       = plot_animation(step_df)
-                line_plot   = line_plot.altair_chart(lines)
-                variabls.graph_size=size
-                size = i * burst
+            for i in range(Variables.start,df_elements):
+                Variables.start      = i
+                step_df              = df.iloc[0:size]
+                lines                = plot_animation(step_df)
+                line_plot            = line_plot.altair_chart(lines)
+                Variables.graph_size = size
+                size                 = i * burst
 
         if pause_btn:
-            step_df = df.iloc[0:variabls.graph_size]
-            lines = plot_animation(step_df)
+            step_df   = df.iloc[0:Variables.graph_size]
+            lines     = plot_animation(step_df)
             line_plot = line_plot.altair_chart(lines)
+
+#--------------------------------------  STATIC PLOTTING ----------------------------------------------------
+def plotting_graphs(title, column, x_axis, y_axis, flag):
+    fig, axs = plt.subplots()
+    fig.set_size_inches(6,3)
+    plt.plot(x_axis,y_axis)
+    plt.title(title)
+    if flag == True:
+        plt.xlim(45, 55)
+        plt.xlabel("Time in s")
+        plt.ylabel("ecg_dataset in mV")
+    column.pyplot(fig)
