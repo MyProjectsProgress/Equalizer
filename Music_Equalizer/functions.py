@@ -47,7 +47,7 @@ def triangle_window(y_fourier, start, end, val, points_per_freq ):
     return [target_freq[i]*window[i] for i in range(len(window))]    
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def arrhythima( column2, column3):
+def arrhythima(column2, column3):
     ecg_dataset        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
     sampling_frequency = 360                                                        # determining f sample
     time               = np.arange(ecg_dataset.size) / sampling_frequency           # detrmining time axis
@@ -58,18 +58,16 @@ def arrhythima( column2, column3):
 
     y_fourier      = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythima")
 
-    plotting_graphs("Original ecg_dataset", column2, time, ecg_dataset, True)
-
     modified_signal = irfft(y_fourier) 
 
-    plotting_graphs("Modified ecg_dataset", column3, time, modified_signal, True)
+    plotting_graphs(column2, time, ecg_dataset, modified_signal)
 
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
 
     signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
 
-    plotting_graphs  ('original', column2, signal_x_axis, signal_y_axis, False)
+    plotting_graphs  (column2, signal_x_axis, signal_y_axis)
 
     voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
 
@@ -197,6 +195,34 @@ def plot_spectro(original_audio, modified_audio):
 
     st.pyplot(fig)
 
+#--------------------------------------  STATIC PLOTTING ----------------------------------------------------
+def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
+
+    if y_axis2 is not None:
+        fig= plt.figure(figsize=[15,10])
+
+        plt.subplot(2,2,1)
+        plt.plot   (x_axis, y_axis1)
+        plt.xlim   (45, 55)
+        plt.title  ("Original ECG")
+        plt.xlabel ("Time in s")
+        plt.ylabel ("Amplitude in mV")
+
+        plt.subplot(2,2,2)
+        plt.plot   (x_axis, y_axis2)
+        plt.xlim   (45, 55)
+        plt.title  ("Modified ECG")
+        plt.xlabel ("Time in s")
+        plt.ylabel ("Amplitude in mV")
+    else:
+        fig= plt.figure(figsize=[10,4])
+        plt.plot  (x_axis,y_axis1)
+        plt.title ("Audio")
+        plt.xlabel("Time in s")
+        plt.ylabel("Amplitde")
+
+    column2.pyplot(fig)
+
 #-------------------------------------- DYNAMIC PLOTTING ----------------------------------------------------
 def plot_animation(df):
     brush  = alt.selection_interval ()
@@ -237,15 +263,3 @@ def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_b
             step_df   = df.iloc[0:Variables.graph_size]
             lines     = plot_animation(step_df)
             line_plot = line_plot.altair_chart(lines)
-
-#--------------------------------------  STATIC PLOTTING ----------------------------------------------------
-def plotting_graphs(title, column, x_axis, y_axis, flag):
-    fig, axs = plt.subplots()
-    fig.set_size_inches(6,3)
-    plt.plot(x_axis,y_axis)
-    plt.title(title)
-    if flag == True:
-        plt.xlim(45, 55)
-        plt.xlabel("Time in s")
-        plt.ylabel("ecg_dataset in mV")
-    column.pyplot(fig)
