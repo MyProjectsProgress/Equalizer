@@ -207,6 +207,7 @@ def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
         plt.title  ("Original ECG")
         plt.xlabel ("Time in s")
         plt.ylabel ("Amplitude in mV")
+        plt.grid()
 
         plt.subplot(2,2,2)
         plt.plot   (x_axis, y_axis2)
@@ -214,12 +215,14 @@ def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
         plt.title  ("Modified ECG")
         plt.xlabel ("Time in s")
         plt.ylabel ("Amplitude in mV")
+        plt.grid()
     else:
         fig= plt.figure(figsize=[10,4])
         plt.plot  (x_axis,y_axis1)
         plt.title ("Audio")
         plt.xlabel("Time in s")
         plt.ylabel("Amplitde")
+        plt.grid()
 
     column2.pyplot(fig)
 

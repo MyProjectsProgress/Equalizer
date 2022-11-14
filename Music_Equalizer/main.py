@@ -49,7 +49,6 @@ elif select_mode == "Vowels":
     number_of_sliders = 5
     sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
-
 elif select_mode == "Arrhythima":
     fn.arrhythima(column2, column1)
 
