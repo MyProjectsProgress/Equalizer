@@ -49,6 +49,7 @@ elif select_mode == "Vowels":
     number_of_sliders = 5
     sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
+
 elif select_mode == "Arrhythima":
     fn.arrhythima(column2, column1)
 
@@ -59,6 +60,8 @@ elif select_mode == "Voice Tone Changer":
 #--------------------------------------------------------------------- MAIN FUNCTION ---------------------------------------------------------
 
 if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != "Voice Tone Changer":
+
+    start, pause, resume, space = st.columns([1.001,1.01,0.99,7])
 
     signal_x_axis, signal_y_axis, sample_rate = fn.read_audio(uploaded_file)                            # read audio file
 
@@ -75,10 +78,10 @@ if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != 
         if (show_spectro):
             fn.plot_spectro(file_name,".Equalized_audio.wav")
         else:
-            start_btn  = column1.button(label='Start')
-            pause_btn  = column1.button(label='Pause')
-            resume_btn = column1.button(label='resume')
-            
+            start_btn  = start.button(label='Start')
+            pause_btn  = pause.button(label='Pause')
+            resume_btn = resume.button(label='resume')
+
             fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,start_btn,pause_btn,resume_btn)
 
 

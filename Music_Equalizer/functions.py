@@ -185,7 +185,7 @@ def plot_spectro(original_audio, modified_audio):
     D2     = librosa.stft(y2)             # STFT of y
     S_db2  = librosa.amplitude_to_db(np.abs(D2), ref=np.max)
 
-    fig= plt.figure(figsize=[15,10])
+    fig= plt.figure(figsize=[15,8])
     plt.subplot(2,2,1)
     img1 = librosa.display.specshow(S_db1, x_axis='time', y_axis='linear')
     plt.subplot(2,2,2)
@@ -199,7 +199,7 @@ def plot_spectro(original_audio, modified_audio):
 def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
 
     if y_axis2 is not None:
-        fig= plt.figure(figsize=[15,10])
+        fig= plt.figure(figsize=[15,8])
 
         plt.subplot(2,2,1)
         plt.plot   (x_axis, y_axis1)
@@ -229,7 +229,7 @@ def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
 #-------------------------------------- DYNAMIC PLOTTING ----------------------------------------------------
 def plot_animation(df):
     brush  = alt.selection_interval ()
-    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=250).add_selection(brush).interactive()
+    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
