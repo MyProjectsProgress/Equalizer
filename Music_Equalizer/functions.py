@@ -90,6 +90,7 @@ def read_audio(audio_file):
     duration      = n_samples / sample_rate                      # duration of the audio file
     signal_y_axis = np.frombuffer(signal_wave, dtype=np.int16)   # get the signal from buffer memory
     signal_x_axis = np.linspace(0, duration, len(signal_y_axis))
+
     return signal_x_axis, signal_y_axis, sample_rate
     
 #-------------------------------------- FOURIER TRANSFORM ----------------------------------------------------
@@ -210,7 +211,6 @@ def plot_spectro(original_audio, modified_audio):
 
 #-------------------------------------- DYNAMIC PLOTTING ----------------------------------------------------
 class Variables:
-    points_num=1000
     start=0
 
 def plot_animation(df):
@@ -219,9 +219,11 @@ def plot_animation(df):
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn):
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate):
 
-        df = pd.DataFrame({'time': signal_x_axis[::200], 'amplitude': signal_y_axis[:: 200], 'amplitude after processing': signal_y_axis1[::200]}, columns=['time', 'amplitude','amplitude after processing'])
+        step_plot= int(sample_rate/210)
+
+        df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
         lines       = plot_animation(df)
         line_plot   = st.altair_chart(lines)
