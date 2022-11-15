@@ -48,15 +48,16 @@ def triangle_window(y_fourier, start, end, val, points_per_freq ):
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythima(column2, column3):
+
     ecg_dataset        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
-    sampling_frequency = 360                                                        # determining f sample
-    time               = np.arange(ecg_dataset.size) / sampling_frequency           # detrmining time axis
+    sampling_frequency = 360                                                        # Determining f sample
+    time               = np.arange(ecg_dataset.size) / sampling_frequency           # Detrmining tima axis
 
     y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
 
-    sliders_labels = 'Arrhythima' 
+    sliders_labels = 'Arrhythima'
 
-    y_fourier      = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythima")
+    y_fourier       = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythima")
 
     modified_signal = irfft(y_fourier) 
 
@@ -99,7 +100,7 @@ def fourier_transform(signal_y_axis, sample_rate):
     return y_fourier, points_per_freq
 
 #-------------------------------------- CREATE SLIDERS & MODIFY SIGNALS ----------------------------------------------------
-def f_ranges(y_fourier,points_per_freq,n_sliders,sliders_labels,mode):
+def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
 
     columns = st.columns(n_sliders)
     counter = 0
@@ -157,7 +158,7 @@ def f_ranges(y_fourier,points_per_freq,n_sliders,sliders_labels,mode):
         # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
 
     elif mode == "Arrhythima":
-        y_fourier[int(points_per_freq*0) : int(points_per_freq* 5)] *= list_of_sliders_values[0] 
+        y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0] 
 
     elif mode == "Voice Tone Changer":
         pass
@@ -199,23 +200,25 @@ def plot_spectro(original_audio, modified_audio):
 def plotting_graphs(column2, x_axis, y_axis1, y_axis2 = None):
 
     if y_axis2 is not None:
-        fig= plt.figure(figsize=[15,10])
+        
+        fig= plt.figure(figsize=[10,4])
 
-        plt.subplot(2,2,1)
-        plt.plot   (x_axis, y_axis1)
-        plt.xlim   (45, 55)
-        plt.title  ("Original ECG")
-        plt.xlabel ("Time in s")
-        plt.ylabel ("Amplitude in mV")
-        plt.grid()
+        # plt.subplot(2,2,1)
+        # plt.plot   (x_axis, y_axis1)
+        # plt.xlim   (45, 55)
+        # plt.title  ("Original ecg_dataset")
+        # plt.xlabel ("Time in s")
+        # plt.ylabel ("Amplitude in mV")
+        # plt.grid()
 
-        plt.subplot(2,2,2)
+        # plt.subplot(2,2,2)
         plt.plot   (x_axis, y_axis2)
-        plt.xlim   (45, 55)
-        plt.title  ("Modified ECG")
+        plt.xlim   (45, 51)
+        plt.title  ("Modified ecg_dataset")
         plt.xlabel ("Time in s")
         plt.ylabel ("Amplitude in mV")
         plt.grid()
+
     else:
         fig= plt.figure(figsize=[10,4])
         plt.plot  (x_axis,y_axis1)

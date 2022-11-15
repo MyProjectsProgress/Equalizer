@@ -63,7 +63,7 @@
 #     peaks_indeces = peaks[0]  # list of indeces of frequency with high peaks
 
 #     points_per_freq = len(fourier_x_axis) / (sample_rate) # NOT UNDERSTANDABLE 
-    
+
 #     y_fourier = dataframe_creating_sliders(peaks_indeces, points_per_freq, fourier_x_axis, y_fourier) # calling creating sliders function
 
 #     dataframe_fourier_inverse_transform(y_fourier,signal_x_axis)
@@ -99,9 +99,8 @@
 
 # index_drums = np.where((time >= 47.2) & (time < 47.8))
 
-
 # #  ----------------------------------- OLD ARRHYTHMIA ---------------------------------------------------------------
-# ecg = electrocardiogram()       # Calling the arrhythmia database of a woman
+    # ecg = electrocardiogram()       # Calling the arrhythmia database of a woman
     # fs = 360                        # determining f sample
     # time = np.arange(ecg.size) / fs # detrmining tima axis
 
@@ -124,6 +123,7 @@
     #     plotting_graphs(column3, time, modified_signal, True)
 
     #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
+
 # def arrhythima(column1, column2, column3, show_spectro, dataframe):
 
 #     # normal beat

@@ -57,7 +57,6 @@ elif select_mode == "Voice Tone Changer":
         fn.voice_changer(uploaded_file, column1, column2)
 
 #--------------------------------------------------------------------- MAIN FUNCTION ---------------------------------------------------------
-
 if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != "Voice Tone Changer":
 
     signal_x_axis, signal_y_axis, sample_rate = fn.read_audio(uploaded_file)                            # read audio file
@@ -69,11 +68,11 @@ if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != 
     modified_signal         = irfft(y_fourier)                           # returns the inverse transform after modifying it with sliders
     modified_signal_channel = np.int16(modified_signal)                  # returns two channels 
 
-    write(".Equalized_audio.wav", sample_rate, modified_signal_channel)  # creates the modified song
+    write(".Equalized_Music.wav", sample_rate, modified_signal_channel)  # creates the modified song
 
     with column2:
         if (show_spectro):
-            fn.plot_spectro(file_name,".Equalized_audio.wav")
+            fn.plot_spectro(file_name,".Equalized_Music.wav")
         else:
             start_btn  = column1.button(label='Start')
             pause_btn  = column1.button(label='Pause')
@@ -83,4 +82,4 @@ if uploaded_file is not None and select_mode != "Arrhythima" and select_mode != 
 
 
     # column2.audio(uploaded_file, format='audio/wav')         # displaying the audio before editing
-    column2.audio(".Equalized_audio.wav", format='audio/wav')  # displaying the audio after  editing
+    column2.audio(".Equalized_Music.wav", format='audio/wav')  # displaying the audio after  editing
