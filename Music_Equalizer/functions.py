@@ -95,7 +95,7 @@ def read_audio(audio_file):
     
 #-------------------------------------- FOURIER TRANSFORM ----------------------------------------------------
 def fourier_transform(signal_y_axis, sample_rate):
-    
+
     y_fourier       = rfft(signal_y_axis)                                # returns complex numbers of the y axis in the data frame
     x_fourier       = rfftfreq(len(signal_y_axis), 1/sample_rate)        # returns the frequency x axis after fourier transform
     points_per_freq = len(x_fourier) / (x_fourier[-1])                   # how many points in the y_fourier array from freq 0 to 1 
@@ -126,37 +126,37 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
     elif mode == "Vowels" :
         # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
         #  Z ranges
-        y_fourier[int(130*points_per_freq):int(240*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq) 
-        y_fourier[int(350*points_per_freq):int(470*points_per_freq)] =  triangle_window(y_fourier, 350,470, list_of_sliders_values[0], points_per_freq) [0]
-        y_fourier[int(260*points_per_freq):int(350*points_per_freq)] =   triangle_window(y_fourier, 260,350, list_of_sliders_values[0], points_per_freq) 
+        y_fourier[int(130*points_per_freq):int(240*points_per_freq)]    = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq) 
+        y_fourier[int(350*points_per_freq):int(470*points_per_freq)]    = triangle_window(y_fourier, 350,470, list_of_sliders_values[0], points_per_freq) [0]
+        y_fourier[int(260*points_per_freq):int(350*points_per_freq)]    = triangle_window(y_fourier, 260,350, list_of_sliders_values[0], points_per_freq) 
         y_fourier[int(8000*points_per_freq):int(14000*points_per_freq)] = triangle_window(y_fourier, 8000,14000, list_of_sliders_values[0], points_per_freq) 
         #/i:/ ranges
-        y_fourier[int(280*points_per_freq):int(360*points_per_freq)]  = triangle_window(y_fourier, 280,360, list_of_sliders_values[1], points_per_freq) 
-        y_fourier[int(210*points_per_freq):int(280*points_per_freq)]  = triangle_window(y_fourier, 210,280, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(130*points_per_freq):int(210*points_per_freq)]  = triangle_window(y_fourier, 130,210, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(340*points_per_freq):int(470*points_per_freq)]  = triangle_window(y_fourier, 340,470, list_of_sliders_values[1], points_per_freq)
+        y_fourier[int(280*points_per_freq):int(360*points_per_freq)]    = triangle_window(y_fourier, 280,360, list_of_sliders_values[1], points_per_freq) 
+        y_fourier[int(210*points_per_freq):int(280*points_per_freq)]    = triangle_window(y_fourier, 210,280, list_of_sliders_values[1], points_per_freq)
+        y_fourier[int(130*points_per_freq):int(210*points_per_freq)]    = triangle_window(y_fourier, 130,210, list_of_sliders_values[1], points_per_freq)
+        y_fourier[int(340*points_per_freq):int(470*points_per_freq)]    = triangle_window(y_fourier, 340,470, list_of_sliders_values[1], points_per_freq)
         y_fourier[int(3000*points_per_freq):int(3800*points_per_freq)]  = triangle_window(y_fourier, 3000,3800, list_of_sliders_values[1], points_per_freq)
         y_fourier[int(5000*points_per_freq):int(6300*points_per_freq)]  = triangle_window(y_fourier, 5000,6300, list_of_sliders_values[1], points_per_freq)
         # /e/ ranges
         #for e 
-        y_fourier[int(342*points_per_freq):int(365*points_per_freq)]  = triangle_window(y_fourier, 342,365, list_of_sliders_values[2], points_per_freq)
-        y_fourier[int(310*points_per_freq):int(330*points_per_freq)] = triangle_window(y_fourier, 310,330, list_of_sliders_values[2], points_per_freq)
+        y_fourier[int(342*points_per_freq):int(365*points_per_freq)]   = triangle_window(y_fourier, 342,365, list_of_sliders_values[2], points_per_freq)
+        y_fourier[int(310*points_per_freq):int(330*points_per_freq)]   = triangle_window(y_fourier, 310,330, list_of_sliders_values[2], points_per_freq)
         # y_fourier[int(170*points_per_freq):int(250*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
         # y_fourier[int(685*points_per_freq):int(695*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(702*points_per_freq):int(720*points_per_freq)]  = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(840*points_per_freq):int(1100*points_per_freq)]  = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
+        # y_fourier[int(702*points_per_freq):int(720*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
+        # y_fourier[int(840*points_per_freq):int(1100*points_per_freq)]= triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
         #/ʊə/ ranges
         #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[3], points_per_freq)
-        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)]   = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        y_fourier[int(140*points_per_freq):int(308*points_per_freq)]  = triangle_window(y_fourier, 140,308, list_of_sliders_values[3], points_per_freq)
-        y_fourier[int(320*points_per_freq):int(370*points_per_freq)]  = triangle_window(y_fourier, 320,370, list_of_sliders_values[3], points_per_freq)
+        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]   = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[3], points_per_freq)
+        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
+        y_fourier[int(140*points_per_freq):int(308*points_per_freq)]     = triangle_window(y_fourier, 140,308, list_of_sliders_values[3], points_per_freq)
+        y_fourier[int(320*points_per_freq):int(370*points_per_freq)]     = triangle_window(y_fourier, 320,370, list_of_sliders_values[3], points_per_freq)
         #F ranges
         #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[4], points_per_freq)
+        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]     = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[4], points_per_freq)
         # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
-        # y_fourier[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
-        # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
+        # y_fourier[int(140*points_per_freq):int(308*points_per_freq)]    *= list_of_sliders_values[4] 
+        # y_fourier[int(320*points_per_freq):int(370*points_per_freq)]    *= list_of_sliders_values[4] 
 
     elif mode == "Arrhythmia":
         y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0] 
