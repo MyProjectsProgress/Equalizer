@@ -7,7 +7,7 @@
 .main.css-k1vhr4.egzxvld3{
     background: linear-gradient(90deg, rgba(37,33,48,1) 0%, rgba(46,33,89,1) 35%, rgba(37,33,48,1) 100%);
     margin-top: -30px;
-    margin-top: -90px;
+    /* margin-top: -90px; */
     /* overflow: hidden; */
 }
 
@@ -120,6 +120,37 @@
     font-weight: 600;
 }
 
+/* Play Button */
+
+/* .css-fpjttv.e1tzin5v2{
+    margin: 0 0px;
+    min-width: 100%;
+    margin-top: -180px;
+    transform: translateX(0px);
+} */
+
+.css-jwpbkl.e1tzin5v2{
+    /* min-width: 100%; */
+    margin-top: -80px;
+    /* margin-left: 2%; */
+    /* max-width: 5%; */
+    transform: translateX(40px);
+}
+
+.css-1kulxx7.e1tzin5v2{
+    /* min-width: 100%; */
+    margin-top: -80px;
+    /* max-width: 5%; */
+    transform: translateX(-32.5px);
+}
+
+.css-1mrqjpr.e1tzin5v2{
+    /* min-width: 100%; */
+    margin-top: -80px;
+    /* margin-right: 65%; */
+    /* max-width: 5%; */
+    transform: translateX(-100px);
+}
 
 /* Browse Button */
 
