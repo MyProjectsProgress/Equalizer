@@ -48,7 +48,7 @@ elif select_mode == "Vowels":
     sliders_labels = ['Z','/i:/','/e/','ʊə','F']
 
 elif select_mode == "Arrhythmia":
-        fn.arrhythmia(graphs_col)
+        fn.arrhythmia(tools_col,graphs_col)
 
 elif select_mode == "Voice Tone Changer":
     if uploaded_file:

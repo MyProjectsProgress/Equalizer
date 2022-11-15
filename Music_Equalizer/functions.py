@@ -15,20 +15,23 @@ import altair as alt
 import pandas as pd
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def arrhythmia(column):
+def arrhythmia(tools_col,graphs_col):
     ecg_dataset        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
     sampling_frequency = 360                                                        # determining f sample
     time               = np.arange(ecg_dataset.size) / sampling_frequency           # detrmining time axis
 
     y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
 
-    sliders_labels  = ['Arrhythmia'] 
+    sliders_labels  = 'Arrhythmia'
 
-    y_fourier       = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythmia")
+    with tools_col:
+        slider = vertical_slider()
+
+    y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= slider
 
     modified_signal = irfft(y_fourier) 
 
-    static_graph(column, time, ecg_dataset, modified_signal)
+    static_graph(graphs_col, time, ecg_dataset, modified_signal)
 
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
@@ -159,7 +162,8 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
 
     elif mode == "Arrhythmia":
-        y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0] 
+        # y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0]
+        pass 
 
     elif mode == "Voice Tone Changer":
         pass
@@ -171,7 +175,7 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
 
     if y_axis2 is not None:
 
-        fig= plt.figure(figsize=[10,4])
+        fig= plt.figure(figsize=[15,5])
         plt.plot   (x_axis, y_axis2)
         plt.xlim   (45, 51)
         plt.title  ("Modified ecg_dataset")
@@ -180,7 +184,7 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
         plt.grid()
 
     else:
-        fig= plt.figure(figsize=[10,4])
+        fig= plt.figure(figsize=[15,5])
         plt.plot  (x_axis,y_axis1)
         plt.title ("Audio")
         plt.xlabel("Time in s")
