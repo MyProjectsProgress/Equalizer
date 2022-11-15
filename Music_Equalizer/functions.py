@@ -22,9 +22,9 @@ def arrhythmia(column):
 
     y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
 
-    sliders_labels = ['Arrhythmia'] 
+    sliders_labels  = ['Arrhythmia'] 
 
-    y_fourier      = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythmia")
+    y_fourier       = f_ranges(y_fourier, points_per_freq, 1, sliders_labels, "Arrhythmia")
 
     modified_signal = irfft(y_fourier) 
 
@@ -38,8 +38,6 @@ def voice_changer(uploaded_file, column1, column2):
     static_graph  (column2, signal_x_axis, signal_y_axis)
 
     voice = column1.radio('Voice', options=["Normal Voice","Deep Voice", "Smooth Voice"])
-
-    
 
     if voice == "Deep Voice":
         empty = column1.empty()
@@ -64,8 +62,8 @@ def voice_changer(uploaded_file, column1, column2):
         empty.write(song)
 
 #-------------------------------------- CUSTOM SLIDER ----------------------------------------------------
-parent_dir = os.path.dirname(os.path.abspath(__file__))
-build_dir = os.path.join(parent_dir, "build")
+parent_dir       = os.path.dirname(os.path.abspath(__file__))
+build_dir        = os.path.join(parent_dir, "build")
 _vertical_slider = components.declare_component("vertical_slider", path=build_dir)
 
 def vertical_slider(key=None):                                      # The function to be called
@@ -75,12 +73,12 @@ def vertical_slider(key=None):                                      # The functi
 #-------------------------------------- WINDOW FUNCTION FOR VOWELS--------------------------------------
 def triangle_window(y_fourier, start, end, val, points_per_freq ):
     target_freq = y_fourier[int(start* points_per_freq):int(end*points_per_freq)]
-    if val==0:
+    if   val == 0:
         window = -(signal.windows.triang(len(target_freq))-1)
-    elif val ==1:
+    elif val == 1:
             return target_freq 
     else:
-        window= val* signal.windows.triang(len(target_freq))
+        window= val * signal.windows.triang(len(target_freq))
     return [target_freq[i]*window[i] for i in range(len(window))]
 
 #-------------------------------------- READ AUDIO FILES ----------------------------------------------------
@@ -159,7 +157,7 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         # y_fourier[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
         # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
 
-    elif mode == "Arrhythima":
+    elif mode == "Arrhythmia":
         y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0] 
 
     elif mode == "Voice Tone Changer":
@@ -171,18 +169,8 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
 def static_graph(column, x_axis, y_axis1, y_axis2 = None):
 
     if y_axis2 is not None:
-        
+
         fig= plt.figure(figsize=[10,4])
-
-        # plt.subplot(2,2,1)
-        # plt.plot   (x_axis, y_axis1)
-        # plt.xlim   (45, 55)
-        # plt.title  ("Original ecg_dataset")
-        # plt.xlabel ("Time in s")
-        # plt.ylabel ("Amplitude in mV")
-        # plt.grid()
-
-        # plt.subplot(2,2,2)
         plt.plot   (x_axis, y_axis2)
         plt.xlim   (45, 51)
         plt.title  ("Modified ecg_dataset")
