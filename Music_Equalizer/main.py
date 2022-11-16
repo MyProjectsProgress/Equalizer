@@ -58,7 +58,7 @@ elif select_mode == "Voice Tone Changer":
 
 if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != "Voice Tone Changer":
 
-    show_spectro  = tools_col.checkbox("Show Spectrogram")                                                # Spectrogram Checkbox
+    show_spectro  = tools_col.checkbox("Show Spectrogram")                                              # Spectrogram Checkbox
 
     start, pause, resume, space = st.columns([1.001,1.01,0.99,7])                                       # Buttons Columns
 

@@ -13,6 +13,8 @@ import streamlit.components.v1 as components
 from scipy import signal
 import altair as alt
 import pandas as pd
+from scipy.io.wavfile import write
+
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythmia(tools_col,graphs_col):
@@ -35,34 +37,52 @@ def arrhythmia(tools_col,graphs_col):
 
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
+    # voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
 
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
+    # if voice == "Deep Voice":
+    #     empty = column2.empty()
+    #     empty.empty()
+    #     speed_rate           = 1.4
+    #     sampling_rate_factor = 1.4
 
-    static_graph  (column2, signal_x_axis, signal_y_axis)
+    # elif voice == "Smooth Voice":
+    #     empty = column2.empty()
+    #     empty.empty()
+    #     speed_rate           = 0.5
+    #     sampling_rate_factor = 0.5
+
+    # loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
+    # loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate = speed_rate)
+
+    # song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
+    # column2.write(type(song))
+    # empty.write(song)
+
 
     voice = column1.radio('Voice', options=["Normal Voice","Deep Voice", "Smooth Voice"])
+    
+    if voice == "Normal Voice":
+        Num_of_steps = 0
 
     if voice == "Deep Voice":
-        empty = column1.empty()
-        empty.empty()
-        speed_rate           = 1.4
-        sampling_rate_factor = 1.4
+        Num_of_steps = -5
 
     elif voice == "Smooth Voice":
-        empty = column1.empty()
-        empty.empty()
-        speed_rate           = 0.5
-        sampling_rate_factor = 0.5
+        Num_of_steps = 10
 
-    else:
-        column1.audio(uploaded_file, format="audio/wav")
+    signal, sample_rate = librosa.load(uploaded_file, sr=None)
+    modified_signal =librosa.effects.pitch_shift(signal,sr=sample_rate,n_steps=Num_of_steps)
+    write("voice_changed.wav", sample_rate, modified_signal)
 
-    if voice != "Normal Voice":
-        loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
-        loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate=speed_rate)
+    time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] )                           # read audio file
+    start, pause, resume, space = st.columns([1.001,1.0,0.99,7])                                # Buttons Columns
+    start_btn  = start.button(label='Start')
+    pause_btn  = pause.button(label='P  ause')
+    resume_btn = resume.button(label='Resume')
 
-        song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
-        empty.write(song)
+    with column2:
+        Dynamic_graph(time,signal,modified_signal,start_btn,pause_btn,resume_btn,sample_rate)  # Plot Dynamic Graph
+        st.audio("voice_changed.wav", format='audio/wav')
 
 #-------------------------------------- CUSTOM SLIDER ----------------------------------------------------
 parent_dir       = os.path.dirname(os.path.abspath(__file__))
