@@ -81,7 +81,7 @@ def voice_changer(uploaded_file, column1, column2):
     resume_btn = resume.button(label='Resume')
 
     with column2:
-        Dynamic_graph(time,signal,modified_signal,start_btn,pause_btn,resume_btn,sample_rate)  # Plot Dynamic Graph
+        Dynamic_graph(time,signal,modified_signal,start_btn,pause_btn,resume_btn,sample_rate,True)  # Plot Dynamic Graph
         st.audio("voice_changed.wav", format='audio/wav')
 
 #-------------------------------------- CUSTOM SLIDER ----------------------------------------------------
@@ -237,19 +237,24 @@ def plot_spectro(original_audio, modified_audio):
 class Variables:
     start=0
 
-def plot_animation(df):
+def plot_animation(df,flag):
     brush  = alt.selection_interval ()
-    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
+
+    if flag:
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=300).add_selection(brush).interactive()
+    else:
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
+    
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate):
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate,flag):
 
         step_plot= int(sample_rate/210)
 
         df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
-        lines       = plot_animation(df)
+        lines       = plot_animation(df,flag)
         line_plot   = st.altair_chart(lines)
 
         df_elements = df.shape[0] # number of elements in the dataframe
@@ -260,7 +265,7 @@ def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_b
             for i in range(1, df_elements):
                 Variables.start      = i
                 step_df              = df.iloc[0:size]
-                lines                = plot_animation(step_df)
+                lines                = plot_animation(step_df,flag)
                 line_plot            = line_plot.altair_chart(lines)
                 Variables.graph_size = size
                 size                 = i * burst 
@@ -269,12 +274,12 @@ def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_b
             for i in range(Variables.start,df_elements):
                 Variables.start      = i
                 step_df              = df.iloc[0:size]
-                lines                = plot_animation(step_df)
+                lines                = plot_animation(step_df,flag)
                 line_plot            = line_plot.altair_chart(lines)
                 Variables.graph_size = size
                 size                 = i * burst
 
         if pause_btn:
             step_df   = df.iloc[0:Variables.graph_size]
-            lines     = plot_animation(step_df)
+            lines     = plot_animation(step_df,flag)
             line_plot = line_plot.altair_chart(lines)
