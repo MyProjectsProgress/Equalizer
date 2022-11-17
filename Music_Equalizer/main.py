@@ -26,10 +26,7 @@ select_mode   = tools_col.selectbox("Mode", ["Default","Music", "Vowels", "Arrhy
 
 # ------------------------------------------------------------------- GETTING FILE NAME --------------------------------------------------
 if uploaded_file is not None:
-    # file_type = uploaded_file.type
-    # file_extension = file_type[-3:]
     file_name = uploaded_file.name
-    
 
 #-------------------------------------------------------------------- CHOOSING MODE -----------------------------------------------------------
 if select_mode == "Default":
@@ -75,7 +72,7 @@ if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != 
 
     with graphs_col:
         if (show_spectro):
-            fn.plot_spectro(file_name,".Equalized_audio.wav")                                             # Plot Spectrogram
+            fn.plot_spectro(file_name,".Equalized_audio.wav")
         else:
             start_btn  = start.button(label='Start')
             pause_btn  = pause.button(label='Pause')
@@ -83,5 +80,4 @@ if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != 
 
             fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,start_btn,pause_btn,resume_btn,sample_rate,False)  # Plot Dynamic Graph
 
-    # graphs_col.audio(uploaded_file, format='audio/wav')                                                    # displaying the audio before editing
     graphs_col.audio(".Equalized_audio.wav", format='audio/wav')                                             # displaying the audio after  editing

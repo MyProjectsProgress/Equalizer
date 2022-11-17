@@ -7,14 +7,11 @@ from scipy.fft import irfft
 import wave
 import librosa
 import librosa.display
-import IPython.display as ipd
 import os
 import streamlit.components.v1 as components
-from scipy import signal
 import altair as alt
 import pandas as pd
 from scipy.io.wavfile import write
-
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythmia(tools_col,graphs_col):
@@ -35,32 +32,8 @@ def arrhythmia(tools_col,graphs_col):
 
     static_graph(graphs_col, time, ecg_dataset, modified_signal)
 
-#-------------------------------------- VOWELS ----------------------------------------------------
-
-
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
-    # voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
-
-    # if voice == "Deep Voice":
-    #     empty = column2.empty()
-    #     empty.empty()
-    #     speed_rate           = 1.4
-    #     sampling_rate_factor = 1.4
-
-    # elif voice == "Smooth Voice":
-    #     empty = column2.empty()
-    #     empty.empty()
-    #     speed_rate           = 0.5
-    #     sampling_rate_factor = 0.5
-
-    # loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
-    # loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate = speed_rate)
-
-    # song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
-    # column2.write(type(song))
-    # empty.write(song)
-
 
     voice = column1.radio('Voice', options=["Normal Voice","Deep Voice", "Smooth Voice"])
     
@@ -80,7 +53,7 @@ def voice_changer(uploaded_file, column1, column2):
     time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] )                           # read audio file
     start, pause, resume, space = st.columns([1.001,1.0,0.99,7])                                # Buttons Columns
     start_btn  = start.button(label='Start')
-    pause_btn  = pause.button(label='P  ause')
+    pause_btn  = pause.button(label='Pause')
     resume_btn = resume.button(label='Resume')
 
     with column2:
@@ -95,8 +68,6 @@ _vertical_slider = components.declare_component("vertical_slider", path=build_di
 def vertical_slider(key=None):                                      # The function to be called
     slider_value = _vertical_slider(key=key ,default=1)
     return slider_value
-
-
 
 #-------------------------------------- READ AUDIO FILES ----------------------------------------------------
 def read_audio(audio_file):
@@ -131,7 +102,7 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         counter += 1
         list_of_sliders_values.append(sliders)
 
-    if   mode == "Default":                                            # Attache certain frequencies to each slider depending on the choosen mode
+    if   mode == "Default":                                            # Attach certain frequencies to each slider depending on the choosen mode
         for index,value in enumerate(list_of_sliders_values):
             y_fourier[int(points_per_freq * 1000 * index)  : int(points_per_freq * 1000 * index + points_per_freq * 1000)] *= value
 
@@ -145,7 +116,7 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
 
         # /ʃ/ range
         y_fourier[int(800*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[0]
-       
+
         #/ʊ/ range
         y_fourier[int(500*points_per_freq):int(2000*points_per_freq)]  *= list_of_sliders_values[1]
 
@@ -160,8 +131,6 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         # /b/ range
         y_fourier[int(1200*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[4]
         # y_fourier *=2
-
-
 
     elif mode == "Arrhythmia":
         # y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0]
@@ -183,7 +152,7 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
         plt.title  ("Modified ecg_dataset")
         plt.xlabel ("Time in s")
         plt.ylabel ("Amplitude in mV")
-        plt.grid()
+        plt.grid   ()
 
     else:
         fig= plt.figure(figsize=[15,5])
@@ -191,7 +160,7 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
         plt.title ("Audio")
         plt.xlabel("Time in s")
         plt.ylabel("Amplitde")
-        plt.grid()
+        plt.grid  ()
 
     column.pyplot(fig)
 
@@ -210,8 +179,6 @@ def plot_spectro(original_audio, modified_audio):
     img1 = librosa.display.specshow(S_db1, x_axis='time', y_axis='linear')
     plt.subplot(2,2,2)
     img2 = librosa.display.specshow(S_db2, x_axis='time', y_axis='linear')
-    # fig.colorbar(img1, format="%+2.f dB")
-    # fig.colorbar(img2, format="%+2.f dB")
 
     st.pyplot(fig)
 
