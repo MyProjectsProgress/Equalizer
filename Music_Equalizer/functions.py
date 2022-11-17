@@ -35,6 +35,9 @@ def arrhythmia(tools_col,graphs_col):
 
     static_graph(graphs_col, time, ecg_dataset, modified_signal)
 
+#-------------------------------------- VOWELS ----------------------------------------------------
+
+
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
     # voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
@@ -93,16 +96,7 @@ def vertical_slider(key=None):                                      # The functi
     slider_value = _vertical_slider(key=key ,default=1)
     return slider_value
 
-#-------------------------------------- WINDOW FUNCTION FOR VOWELS--------------------------------------
-def triangle_window(y_fourier, start, end, val, points_per_freq ):
-    target_freq = y_fourier[int(start* points_per_freq):int(end*points_per_freq)]
-    if   val == 0:
-        window = -(signal.windows.triang(len(target_freq))-1)
-    elif val == 1:
-            return target_freq 
-    else:
-        window= val * signal.windows.triang(len(target_freq))
-    return [target_freq[i]*window[i] for i in range(len(window))]
+
 
 #-------------------------------------- READ AUDIO FILES ----------------------------------------------------
 def read_audio(audio_file):
@@ -147,39 +141,27 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         y_fourier[int(points_per_freq*2600):                          ] *= list_of_sliders_values[2] * 0.6
 
     elif mode == "Vowels" :
-        # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
-        #  Z ranges
-        y_fourier[int(130*points_per_freq):int(240*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq) 
-        y_fourier[int(350*points_per_freq):int(470*points_per_freq)] =  triangle_window(y_fourier, 350,470, list_of_sliders_values[0], points_per_freq) [0]
-        y_fourier[int(260*points_per_freq):int(350*points_per_freq)] =   triangle_window(y_fourier, 260,350, list_of_sliders_values[0], points_per_freq) 
-        y_fourier[int(8000*points_per_freq):int(14000*points_per_freq)] = triangle_window(y_fourier, 8000,14000, list_of_sliders_values[0], points_per_freq) 
-        #/i:/ ranges
-        y_fourier[int(280*points_per_freq):int(360*points_per_freq)]  = triangle_window(y_fourier, 280,360, list_of_sliders_values[1], points_per_freq) 
-        y_fourier[int(210*points_per_freq):int(280*points_per_freq)]  = triangle_window(y_fourier, 210,280, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(130*points_per_freq):int(210*points_per_freq)]  = triangle_window(y_fourier, 130,210, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(340*points_per_freq):int(470*points_per_freq)]  = triangle_window(y_fourier, 340,470, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(3000*points_per_freq):int(3800*points_per_freq)]  = triangle_window(y_fourier, 3000,3800, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(5000*points_per_freq):int(6300*points_per_freq)]  = triangle_window(y_fourier, 5000,6300, list_of_sliders_values[1], points_per_freq)
-        # /e/ ranges
-        #for e 
-        y_fourier[int(342*points_per_freq):int(365*points_per_freq)]  = triangle_window(y_fourier, 342,365, list_of_sliders_values[2], points_per_freq)
-        y_fourier[int(310*points_per_freq):int(330*points_per_freq)] = triangle_window(y_fourier, 310,330, list_of_sliders_values[2], points_per_freq)
-        # y_fourier[int(170*points_per_freq):int(250*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(685*points_per_freq):int(695*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(702*points_per_freq):int(720*points_per_freq)]  = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(840*points_per_freq):int(1100*points_per_freq)]  = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        #/ʊə/ ranges
-        #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[3], points_per_freq)
-        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)]   = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        y_fourier[int(140*points_per_freq):int(308*points_per_freq)]  = triangle_window(y_fourier, 140,308, list_of_sliders_values[3], points_per_freq)
-        y_fourier[int(320*points_per_freq):int(370*points_per_freq)]  = triangle_window(y_fourier, 320,370, list_of_sliders_values[3], points_per_freq)
-        #F ranges
-        #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]  = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[4], points_per_freq)
-        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
-        # y_fourier[int(140*points_per_freq):int(308*points_per_freq)] *= list_of_sliders_values[4] 
-        # y_fourier[int(320*points_per_freq):int(370*points_per_freq)] *= list_of_sliders_values[4] 
+        # sliders_labels = ['ʃ','ʊ','a','r','b']
+
+        # /ʃ/ range
+        y_fourier[int(800*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[0]
+       
+        #/ʊ/ range
+        y_fourier[int(500*points_per_freq):int(2000*points_per_freq)]  *= list_of_sliders_values[1]
+
+        # /a/ range
+        y_fourier[int(500*points_per_freq):int(1200*points_per_freq)]  *= list_of_sliders_values[2]
+        ##500-2000 try
+        
+        # /r/ range
+        y_fourier[int(900*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[3]
+        # y_fourier *=2
+
+        # /b/ range
+        y_fourier[int(1200*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[4]
+        # y_fourier *=2
+
+
 
     elif mode == "Arrhythmia":
         # y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0]

@@ -45,7 +45,7 @@ elif select_mode == "Music":
 
 elif select_mode == "Vowels":
     number_of_sliders = 5
-    sliders_labels = ['Z','/i:/','/e/','ʊə','F']
+    sliders_labels = ['ʃ','ʊ','a','r','b']
 
 elif select_mode == "Arrhythmia":
         fn.arrhythmia(tools_col,graphs_col)
