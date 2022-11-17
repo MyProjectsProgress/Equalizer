@@ -41,10 +41,10 @@ def voice_changer(uploaded_file, column1, column2):
         Num_of_steps = 0
 
     if voice == "Deep Voice":
-        Num_of_steps = -5
+        Num_of_steps = -7
 
     elif voice == "Smooth Voice":
-        Num_of_steps = 10
+        Num_of_steps = 7
 
     signal, sample_rate = librosa.load(uploaded_file, sr=None)
     modified_signal =librosa.effects.pitch_shift(signal,sr=sample_rate,n_steps=Num_of_steps)
