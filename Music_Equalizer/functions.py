@@ -13,6 +13,8 @@ import streamlit.components.v1 as components
 from scipy import signal
 import altair as alt
 import pandas as pd
+from scipy.io.wavfile import write
+
 
 #-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
 def arrhythmia(tools_col,graphs_col):
@@ -33,36 +35,57 @@ def arrhythmia(tools_col,graphs_col):
 
     static_graph(graphs_col, time, ecg_dataset, modified_signal)
 
+#-------------------------------------- VOWELS ----------------------------------------------------
+
+
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
+    # voice = column1.radio('Voice', options=["Deep Voice", "Smooth Voice"])
 
-    signal_x_axis, signal_y_axis, sample_rate = read_audio(uploaded_file)
+    # if voice == "Deep Voice":
+    #     empty = column2.empty()
+    #     empty.empty()
+    #     speed_rate           = 1.4
+    #     sampling_rate_factor = 1.4
 
-    static_graph  (column2, signal_x_axis, signal_y_axis)
+    # elif voice == "Smooth Voice":
+    #     empty = column2.empty()
+    #     empty.empty()
+    #     speed_rate           = 0.5
+    #     sampling_rate_factor = 0.5
+
+    # loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
+    # loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate = speed_rate)
+
+    # song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
+    # column2.write(type(song))
+    # empty.write(song)
+
 
     voice = column1.radio('Voice', options=["Normal Voice","Deep Voice", "Smooth Voice"])
+    
+    if voice == "Normal Voice":
+        Num_of_steps = 0
 
     if voice == "Deep Voice":
-        empty = column1.empty()
-        empty.empty()
-        speed_rate           = 1.4
-        sampling_rate_factor = 1.4
+        Num_of_steps = -5
 
     elif voice == "Smooth Voice":
-        empty = column1.empty()
-        empty.empty()
-        speed_rate           = 0.5
-        sampling_rate_factor = 0.5
+        Num_of_steps = 10
 
-    else:
-        column1.audio(uploaded_file, format="audio/wav")
+    signal, sample_rate = librosa.load(uploaded_file, sr=None)
+    modified_signal =librosa.effects.pitch_shift(signal,sr=sample_rate,n_steps=Num_of_steps)
+    write("voice_changed.wav", sample_rate, modified_signal)
 
-    if voice != "Normal Voice":
-        loaded_sound_file, sampling_rate = librosa.load(uploaded_file, sr=None)
-        loaded_sound_file                = librosa.effects.time_stretch(loaded_sound_file, rate=speed_rate)
+    time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] )                           # read audio file
+    start, pause, resume, space = st.columns([1.001,1.0,0.99,7])                                # Buttons Columns
+    start_btn  = start.button(label='Start')
+    pause_btn  = pause.button(label='P  ause')
+    resume_btn = resume.button(label='Resume')
 
-        song = ipd.Audio(loaded_sound_file, rate = sampling_rate / sampling_rate_factor)
-        empty.write(song)
+    with column2:
+        Dynamic_graph(time,signal,modified_signal,start_btn,pause_btn,resume_btn,sample_rate,True)  # Plot Dynamic Graph
+        st.audio("voice_changed.wav", format='audio/wav')
 
 #-------------------------------------- CUSTOM SLIDER ----------------------------------------------------
 parent_dir       = os.path.dirname(os.path.abspath(__file__))
@@ -73,16 +96,7 @@ def vertical_slider(key=None):                                      # The functi
     slider_value = _vertical_slider(key=key ,default=1)
     return slider_value
 
-#-------------------------------------- WINDOW FUNCTION FOR VOWELS--------------------------------------
-def triangle_window(y_fourier, start, end, val, points_per_freq ):
-    target_freq = y_fourier[int(start* points_per_freq):int(end*points_per_freq)]
-    if   val == 0:
-        window = -(signal.windows.triang(len(target_freq))-1)
-    elif val == 1:
-            return target_freq 
-    else:
-        window= val * signal.windows.triang(len(target_freq))
-    return [target_freq[i]*window[i] for i in range(len(window))]
+
 
 #-------------------------------------- READ AUDIO FILES ----------------------------------------------------
 def read_audio(audio_file):
@@ -127,39 +141,27 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         y_fourier[int(points_per_freq*2600):                          ] *= list_of_sliders_values[2] * 0.6
 
     elif mode == "Vowels" :
-        # sliders_labels = ['Z','/i:/','/e/','ʊə','F']
-        #  Z ranges
-        y_fourier[int(130*points_per_freq):int(240*points_per_freq)]    = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq) 
-        y_fourier[int(350*points_per_freq):int(470*points_per_freq)]    = triangle_window(y_fourier, 350,470, list_of_sliders_values[0], points_per_freq) [0]
-        y_fourier[int(260*points_per_freq):int(350*points_per_freq)]    = triangle_window(y_fourier, 260,350, list_of_sliders_values[0], points_per_freq) 
-        y_fourier[int(8000*points_per_freq):int(14000*points_per_freq)] = triangle_window(y_fourier, 8000,14000, list_of_sliders_values[0], points_per_freq) 
-        #/i:/ ranges
-        y_fourier[int(280*points_per_freq):int(360*points_per_freq)]    = triangle_window(y_fourier, 280,360, list_of_sliders_values[1], points_per_freq) 
-        y_fourier[int(210*points_per_freq):int(280*points_per_freq)]    = triangle_window(y_fourier, 210,280, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(130*points_per_freq):int(210*points_per_freq)]    = triangle_window(y_fourier, 130,210, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(340*points_per_freq):int(470*points_per_freq)]    = triangle_window(y_fourier, 340,470, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(3000*points_per_freq):int(3800*points_per_freq)]  = triangle_window(y_fourier, 3000,3800, list_of_sliders_values[1], points_per_freq)
-        y_fourier[int(5000*points_per_freq):int(6300*points_per_freq)]  = triangle_window(y_fourier, 5000,6300, list_of_sliders_values[1], points_per_freq)
-        # /e/ ranges
-        #for e 
-        y_fourier[int(342*points_per_freq):int(365*points_per_freq)]   = triangle_window(y_fourier, 342,365, list_of_sliders_values[2], points_per_freq)
-        y_fourier[int(310*points_per_freq):int(330*points_per_freq)]   = triangle_window(y_fourier, 310,330, list_of_sliders_values[2], points_per_freq)
-        # y_fourier[int(170*points_per_freq):int(250*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(685*points_per_freq):int(695*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(702*points_per_freq):int(720*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        # y_fourier[int(840*points_per_freq):int(1100*points_per_freq)]= triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        #/ʊə/ ranges
-        #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]   = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[3], points_per_freq)
-        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)] = triangle_window(y_fourier, 130,240, list_of_sliders_values[0], points_per_freq)
-        y_fourier[int(140*points_per_freq):int(308*points_per_freq)]     = triangle_window(y_fourier, 140,308, list_of_sliders_values[3], points_per_freq)
-        y_fourier[int(320*points_per_freq):int(370*points_per_freq)]     = triangle_window(y_fourier, 320,370, list_of_sliders_values[3], points_per_freq)
-        #F ranges
-        #HAVEN'T BEEN DETECTED YET
-        y_fourier[int(2980*points_per_freq):int(3670*points_per_freq)]     = triangle_window(y_fourier, 2980,3670, list_of_sliders_values[4], points_per_freq)
-        # y_fourier[int(3670*points_per_freq):int(4740*points_per_freq)]  *= list_of_sliders_values[4]  
-        # y_fourier[int(140*points_per_freq):int(308*points_per_freq)]    *= list_of_sliders_values[4] 
-        # y_fourier[int(320*points_per_freq):int(370*points_per_freq)]    *= list_of_sliders_values[4] 
+        # sliders_labels = ['ʃ','ʊ','a','r','b']
+
+        # /ʃ/ range
+        y_fourier[int(800*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[0]
+       
+        #/ʊ/ range
+        y_fourier[int(500*points_per_freq):int(2000*points_per_freq)]  *= list_of_sliders_values[1]
+
+        # /a/ range
+        y_fourier[int(500*points_per_freq):int(1200*points_per_freq)]  *= list_of_sliders_values[2]
+        ##500-2000 try
+        
+        # /r/ range
+        y_fourier[int(900*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[3]
+        # y_fourier *=2
+
+        # /b/ range
+        y_fourier[int(1200*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[4]
+        # y_fourier *=2
+
+
 
     elif mode == "Arrhythmia":
         # y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0]
@@ -217,19 +219,24 @@ def plot_spectro(original_audio, modified_audio):
 class Variables:
     start=0
 
-def plot_animation(df):
+def plot_animation(df,flag):
     brush  = alt.selection_interval ()
-    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
+
+    if flag:
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=300).add_selection(brush).interactive()
+    else:
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
+    
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate):
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate,flag):
 
         step_plot= int(sample_rate/210)
 
         df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
-        lines       = plot_animation(df)
+        lines       = plot_animation(df,flag)
         line_plot   = st.altair_chart(lines)
 
         df_elements = df.shape[0] # number of elements in the dataframe
@@ -240,7 +247,7 @@ def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_b
             for i in range(1, df_elements):
                 Variables.start      = i
                 step_df              = df.iloc[0:size]
-                lines                = plot_animation(step_df)
+                lines                = plot_animation(step_df,flag)
                 line_plot            = line_plot.altair_chart(lines)
                 Variables.graph_size = size
                 size                 = i * burst 
@@ -249,12 +256,12 @@ def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_b
             for i in range(Variables.start,df_elements):
                 Variables.start      = i
                 step_df              = df.iloc[0:size]
-                lines                = plot_animation(step_df)
+                lines                = plot_animation(step_df,flag)
                 line_plot            = line_plot.altair_chart(lines)
                 Variables.graph_size = size
                 size                 = i * burst
 
         if pause_btn:
             step_df   = df.iloc[0:Variables.graph_size]
-            lines     = plot_animation(step_df)
+            lines     = plot_animation(step_df,flag)
             line_plot = line_plot.altair_chart(lines)

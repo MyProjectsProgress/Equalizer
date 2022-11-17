@@ -45,7 +45,7 @@ elif select_mode == "Music":
 
 elif select_mode == "Vowels":
     number_of_sliders = 5
-    sliders_labels = ['Z','/i:/','/e/','ʊə','F']
+    sliders_labels = ['ʃ','ʊ','a','r','b']
 
 elif select_mode == "Arrhythmia":
         fn.arrhythmia(tools_col,graphs_col)
@@ -58,7 +58,7 @@ elif select_mode == "Voice Tone Changer":
 
 if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != "Voice Tone Changer":
 
-    show_spectro  = tools_col.checkbox("Show Spectrogram")                                                # Spectrogram Checkbox
+    show_spectro  = tools_col.checkbox("Show Spectrogram")                                              # Spectrogram Checkbox
 
     start, pause, resume, space = st.columns([1.001,1.01,0.99,7])                                       # Buttons Columns
 
@@ -81,7 +81,7 @@ if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != 
             pause_btn  = pause.button(label='Pause')
             resume_btn = resume.button(label='Resume')
 
-            fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,start_btn,pause_btn,resume_btn,sample_rate)  # Plot Dynamic Graph
+            fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,start_btn,pause_btn,resume_btn,sample_rate,False)  # Plot Dynamic Graph
 
     # graphs_col.audio(uploaded_file, format='audio/wav')                                                    # displaying the audio before editing
     graphs_col.audio(".Equalized_audio.wav", format='audio/wav')                                             # displaying the audio after  editing
