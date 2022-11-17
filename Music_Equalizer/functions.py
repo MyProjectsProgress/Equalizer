@@ -21,8 +21,6 @@ def arrhythmia(tools_col,graphs_col):
 
     y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
 
-    sliders_labels  = 'Arrhythmia'
-
     with tools_col:
         slider = vertical_slider()
 
@@ -90,7 +88,7 @@ def fourier_transform(signal_y_axis, sample_rate):
     return y_fourier, points_per_freq
 
 #-------------------------------------- CREATE SLIDERS & MODIFY SIGNALS ----------------------------------------------------
-def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
+def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels,ranges, mode):
 
     columns = st.columns(n_sliders)                                     # Create sliders and its' labels
     counter = 0
@@ -102,42 +100,8 @@ def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels, mode):
         counter += 1
         list_of_sliders_values.append(sliders)
 
-    if   mode == "Default":                                            # Attach certain frequencies to each slider depending on the choosen mode
-        for index,value in enumerate(list_of_sliders_values):
-            y_fourier[int(points_per_freq * 1000 * index)  : int(points_per_freq * 1000 * index + points_per_freq * 1000)] *= value
-
-    elif mode == "Music"  :
-        y_fourier[                         :int(points_per_freq* 1000)] *= list_of_sliders_values[0] * .35
-        y_fourier[int(points_per_freq*1000):int(points_per_freq* 2600)] *= list_of_sliders_values[1]
-        y_fourier[int(points_per_freq*2600):                          ] *= list_of_sliders_values[2] * 0.6
-
-    elif mode == "Vowels" :
-        # sliders_labels = ['ʃ','ʊ','a','r','b']
-
-        # /ʃ/ range
-        y_fourier[int(800*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[0]
-
-        #/ʊ/ range
-        y_fourier[int(500*points_per_freq):int(2000*points_per_freq)]  *= list_of_sliders_values[1]
-
-        # /a/ range
-        y_fourier[int(500*points_per_freq):int(1200*points_per_freq)]  *= list_of_sliders_values[2]
-        ##500-2000 try
-        
-        # /r/ range
-        y_fourier[int(900*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[3]
-        # y_fourier *=2
-
-        # /b/ range
-        y_fourier[int(1200*points_per_freq):int(5000*points_per_freq)]  *= list_of_sliders_values[4]
-        # y_fourier *=2
-
-    elif mode == "Arrhythmia":
-        # y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= list_of_sliders_values[0]
-        pass 
-
-    elif mode == "Voice Tone Changer":
-        pass
+    for index,value in enumerate(list_of_sliders_values):
+        y_fourier[int(ranges[index][0]*points_per_freq):int(ranges[index][1]*points_per_freq)]  *= value
 
     return y_fourier
 

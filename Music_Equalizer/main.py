@@ -33,15 +33,18 @@ if select_mode == "Default":
     uploaded_file = "BabyElephantWalk.wav"
     file_name     = "BabyElephantWalk.wav"
     number_of_sliders = 10
+    ranges = [[0,1000],[1000,2000],[2000,3000],[3000,4000],[4000,5000],[5000,6000],[6000,7000],[7000,8000],[8000,9000],[9000,10000]]
     sliders_labels = ['0 to 1k Hz', '1k to 2k Hz', '2k to 3k Hz','3k to 4k Hz',
     '4k to 5k Hz', '5k to 6k Hz','6k to 7k Hz', '7k to 8k Hz', '8k to 9k Hz','9k to 10k Hz']
 
 elif select_mode == "Music":
     number_of_sliders = 3
+    ranges = [[0,1000],[1000,2600],[2600,22049]]
     sliders_labels = ['Drums', 'Timpani', 'Piccolo']
 
 elif select_mode == "Vowels":
     number_of_sliders = 5
+    ranges = [[800,5000],[500,2000],[500,1200],[900,5000],[1200,5000]]
     sliders_labels = ['ʃ','ʊ','a','r','b']
 
 elif select_mode == "Arrhythmia":
@@ -63,7 +66,7 @@ if uploaded_file is not None and select_mode != "Arrhythmia" and select_mode != 
 
     y_fourier, points_per_freq = fn.fourier_transform(signal_y_axis, sample_rate)                       # Fourier Transfrom
 
-    y_fourier = fn.f_ranges(y_fourier, points_per_freq, number_of_sliders, sliders_labels, select_mode) # create sliders and modify signal
+    y_fourier = fn.f_ranges(y_fourier, points_per_freq, number_of_sliders, sliders_labels,ranges, select_mode) # create sliders and modify signal
 
     modified_signal         = irfft(y_fourier)                            # returns the inverse transform after modifying it with sliders
     modified_signal_to_audio = np.int16(modified_signal)                  # return audio to one channel 
