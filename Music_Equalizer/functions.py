@@ -13,23 +13,6 @@ import altair as alt
 import pandas as pd
 from scipy.io.wavfile import write
 
-#-------------------------------------- MEDICAL APPLICATION ----------------------------------------------------
-def arrhythmia(tools_col,graphs_col):
-    ecg_dataset        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
-    sampling_frequency = 360                                                        # determining f sample
-    time               = np.arange(ecg_dataset.size) / sampling_frequency           # detrmining time axis
-
-    y_fourier, points_per_freq = fourier_transform(ecg_dataset, sampling_frequency) # Fourier Transfrom
-
-    with tools_col:
-        slider = vertical_slider()
-
-    y_fourier[int(points_per_freq * 1) : int(points_per_freq * 5)] *= slider
-
-    modified_signal = irfft(y_fourier) 
-
-    static_graph(graphs_col, time, ecg_dataset, modified_signal)
-
 #-------------------------------------- VOICE TONE CHANGER ----------------------------------------------------
 def voice_changer(uploaded_file, column1, column2):
 
@@ -49,13 +32,14 @@ def voice_changer(uploaded_file, column1, column2):
     write("voice_changed.wav", sample_rate, modified_signal)
 
     time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] )                           # read audio file
-    start, pause, resume, space = st.columns([1.001,1.0,0.99,7])                                # Buttons Columns
-    start_btn  = start.button(label='Start')
-    pause_btn  = pause.button(label='Pause')
-    resume_btn = resume.button(label='Resume')
-
+    
     with column2:
-        Dynamic_graph(time,signal,modified_signal,start_btn,pause_btn,resume_btn,sample_rate,True)  # Plot Dynamic Graph
+        fig= plt.figure(figsize=[15,8])
+        plt.subplot(2,2,1)
+        plt.plot(time,signal)
+        plt.subplot(2,2,2)
+        plt.plot(time,modified_signal)
+        st.pyplot(fig)
         st.audio("voice_changed.wav", format='audio/wav')
 
 #-------------------------------------- CUSTOM SLIDER ----------------------------------------------------
@@ -88,7 +72,7 @@ def fourier_transform(signal_y_axis, sample_rate):
     return y_fourier, points_per_freq
 
 #-------------------------------------- CREATE SLIDERS & MODIFY SIGNALS ----------------------------------------------------
-def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels,ranges, mode):
+def f_ranges(y_fourier, points_per_freq, n_sliders, sliders_labels,ranges):
 
     columns = st.columns(n_sliders)                                     # Create sliders and its' labels
     counter = 0
@@ -118,14 +102,6 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
         plt.ylabel ("Amplitude in mV")
         plt.grid   ()
 
-    else:
-        fig= plt.figure(figsize=[15,5])
-        plt.plot  (x_axis,y_axis1)
-        plt.title ("Audio")
-        plt.xlabel("Time in s")
-        plt.ylabel("Amplitde")
-        plt.grid  ()
-
     column.pyplot(fig)
 
 #-------------------------------------- PLOTTING SPECTROGRAM ----------------------------------------------------
@@ -149,50 +125,47 @@ def plot_spectro(original_audio, modified_audio):
 #-------------------------------------- DYNAMIC PLOTTING ----------------------------------------------------
 class Variables:
     start=0
+    size=300
+
+if 'flag' not in st.session_state:
+    st.session_state['flag'] = 'Play'
 
 def plot_animation(df,flag):
     brush  = alt.selection_interval ()
 
     if flag:
-        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=300).add_selection(brush).interactive()
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=300).add_selection(brush).interactive()
     else:
-        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time')),).properties(width=414,height=200).add_selection(brush).interactive()
+        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=200).add_selection(brush).interactive()
     
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,start_btn,pause_btn,resume_btn,sample_rate,flag):
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,sample_rate,flag):
 
         step_plot= int(sample_rate/210)
-
+        x = np.linspace(0,signal_y_axis.shape[0],signal_y_axis.shape[0])
         df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
         lines       = plot_animation(df,flag)
         line_plot   = st.altair_chart(lines)
 
         df_elements = df.shape[0] # number of elements in the dataframe
-        burst       = 10          # number of elements  to add to the plot
+        burst       = 300         # number of elements  to add to the plot
         size        = burst       # size of the current dataset
 
-        if start_btn:
-            for i in range(1, df_elements):
+        if (st.session_state.graph_mode == True):
+            for i in range(Variables.start, df_elements - burst):
                 Variables.start      = i
-                step_df              = df.iloc[0:size]
+                step_df              = df.iloc[i: burst+i]
                 lines                = plot_animation(step_df,flag)
-                line_plot            = line_plot.altair_chart(lines)
-                Variables.graph_size = size
-                size                 = i * burst 
-
-        if resume_btn: 
-            for i in range(Variables.start,df_elements):
-                Variables.start      = i
-                step_df              = df.iloc[0:size]
-                lines                = plot_animation(step_df,flag)
-                line_plot            = line_plot.altair_chart(lines)
+                line_plot.altair_chart(lines)
                 Variables.graph_size = size
                 size                 = i * burst
-
-        if pause_btn:
-            step_df   = df.iloc[0:Variables.graph_size]
-            lines     = plot_animation(step_df,flag)
-            line_plot = line_plot.altair_chart(lines)
+        else:
+            try:
+                step_df   = df.iloc[Variables.start : Variables.size]
+                lines     = plot_animation(step_df,flag)
+                line_plot.altair_chart(lines)
+            except:
+                pass

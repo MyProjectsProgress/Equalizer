@@ -1,6 +1,6 @@
 /* Header */
 .css-18ni7ap.e8zbici2{
-    /* visibility: collapse; */
+    visibility: collapse;
 }
 
 /* Body */
@@ -87,19 +87,19 @@
     margin-top: -80px;
     /* margin-left: 2%; */
     /* max-width: 5%; */
-    transform: translateX(40px);
+    transform: translateX(115px);
 }
 
 .css-1kulxx7.e1tzin5v2{
     /* min-width: 100%; */
-    margin-top: -80px;
+    /* margin-top: -80px; */
     /* max-width: 5%; */
     transform: translateX(-32.5px);
 }
 
 .css-1mrqjpr.e1tzin5v2{
     /* min-width: 100%; */
-    margin-top: -80px;
+    /* margin-top: -80px; */
     /* margin-right: 65%; */
     /* max-width: 5%; */
     transform: translateX(-100px);
@@ -113,12 +113,12 @@
 
 .css-1s0pqx4.e1tzin5v2{
     transform: translateX(-34px);
-    margin-top: -80px;
+    /* margin-top: -80px; */
 }
 
 .css-7hjsgc.e1tzin5v2{
     transform: translateX(-100px);
-    margin-top: -80px;
+    /* margin-top: -80px; */
 }
 
 /* Browse Button */
