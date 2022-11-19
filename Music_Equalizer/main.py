@@ -77,7 +77,7 @@ if uploaded_file is not None and select_mode != "Voice Tone Changer":
 
     y_fourier = fn.f_ranges(y_fourier, points_per_freq, number_of_sliders, sliders_labels,ranges) # create sliders and modify signal
 
-    modified_signal         = irfft(y_fourier)                            # returns the inverse transform after modifying it with sliders
+    modified_signal = irfft(y_fourier)                               # returns the inverse transform after modifying it with sliders
     
     if select_mode != "Arrhythmia":
 
@@ -106,9 +106,9 @@ if uploaded_file is not None and select_mode != "Voice Tone Changer":
                 # pause_btn  = pause.button(label='Pause')
                 # resume_btn = resume.button(label='Resume')
 
-                fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,sample_rate,False)  # Plot Dynamic Graph
+                fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,sample_rate)  # Plot Dynamic Graph
 
-        graphs_col.audio(".Equalized_audio.wav", format='audio/wav')                                             # displaying the audio after  editing
+        graphs_col.audio(".Equalized_audio.wav", format='audio/wav')                       # displaying the audio after  editing
 
     else:
         fn.static_graph(graphs_col, signal_x_axis, signal_y_axis, modified_signal)

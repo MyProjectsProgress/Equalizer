@@ -127,45 +127,44 @@ class Variables:
     start=0
     size=300
 
-if 'flag' not in st.session_state:
-    st.session_state['flag'] = 'Play'
+def plot_animation(df):
 
-def plot_animation(df,flag):
+    # set the interval that will be plotted
     brush  = alt.selection_interval ()
 
-    if flag:
-        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=300).add_selection(brush).interactive()
-    else:
-        chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=200).add_selection(brush).interactive()
+    # customizing the graph x axis, giving names and size of the plot
+    chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=200).add_selection(brush).interactive()
     
+    # customizing the graph y axis, giving titles and lables
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
 
-def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,sample_rate,flag):
+def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,sample_rate):
 
         step_plot= int(sample_rate/210)
-        x = np.linspace(0,signal_y_axis.shape[0],signal_y_axis.shape[0])
+        
+        # creating the data frame to to work with altair library
         df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
-        lines       = plot_animation(df,flag)
-        line_plot   = st.altair_chart(lines)
+        lines       = plot_animation(df)     # call plot animation to return the figure "initially all the data frame"
+        line_plot   = st.altair_chart(lines) # plotting all the dataframe initially
 
         df_elements = df.shape[0] # number of elements in the dataframe
         burst       = 300         # number of elements  to add to the plot
         size        = burst       # size of the current dataset
 
         if (st.session_state.graph_mode == True):
-            for i in range(Variables.start, df_elements - burst):
-                Variables.start      = i
-                step_df              = df.iloc[i: burst+i]
-                lines                = plot_animation(step_df,flag)
-                line_plot.altair_chart(lines)
-                Variables.graph_size = size
-                size                 = i * burst
+            for i in range(Variables.start, df_elements - burst): # graphs starts from 0 to 300
+                Variables.start      = i                          # start is edited ex: [0,1,2,..]
+                step_df              = df.iloc[i: burst+i]        # the points we plot are edited ex: (0,300) then (1,301) then (2,302)
+                lines                = plot_animation(step_df)    # call plot animation to return the figure
+                line_plot.altair_chart(lines)                     # plot the figure
+                Variables.graph_size = size                       # modifying the size to be plotted in pause 
+                size                 = i * burst                  # edit the size that will be passed to the pause
         else:
             try:
-                step_df   = df.iloc[Variables.start : Variables.size]
-                lines     = plot_animation(step_df,flag)
-                line_plot.altair_chart(lines)
+                step_df   = df.iloc[Variables.start : Variables.size]   # start from the constantly edited start variable till the constantly edited size variable
+                lines     = plot_animation(step_df)                     # call plot animation to return the figure
+                line_plot.altair_chart(lines)                           # plot the figure
             except:
                 pass
