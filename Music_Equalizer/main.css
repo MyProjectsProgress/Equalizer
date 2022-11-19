@@ -80,6 +80,26 @@
     font-weight: 600;
 }
 
+/* Arrythmia */
+
+.css-132j0fg.e1tzin5v2{
+    background-color: rgb(239, 239, 239);
+    min-height: 150px;
+    padding: 0 30px 0 30px;
+    margin: -20px;
+    margin-top: 0px;
+    padding-bottom: -20px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+}
+
+.css-132j0fg.e1tzin5v2 p{
+    transform: translateY(20px);
+    margin-left: 47%;
+    font-weight: 600;
+}
+
 /* Play Button */
 
 .css-jwpbkl.e1tzin5v2{

@@ -50,6 +50,7 @@ elif select_mode == "Vowels":
     sliders_labels = ['ʃ','ʊ','a','r','b']
 
 elif select_mode == "Arrhythmia":
+    uploaded_file = True
     signal_y_axis        = electrocardiogram()                                        # Calling the arrhythmia database of a woman
     sample_rate = 360                                                        # determining f sample
     signal_x_axis               = np.arange(signal_y_axis.size) / sample_rate           # detrmining time axis
@@ -103,8 +104,6 @@ if uploaded_file is not None and select_mode != "Voice Tone Changer":
                         start_btn = button_container.button("Start")
                 except:
                     pass
-                # pause_btn  = pause.button(label='Pause')
-                # resume_btn = resume.button(label='Resume')
 
                 fn.Dynamic_graph(signal_x_axis,signal_y_axis,modified_signal,sample_rate)  # Plot Dynamic Graph
 
