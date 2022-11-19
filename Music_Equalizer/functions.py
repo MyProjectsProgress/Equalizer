@@ -18,20 +18,20 @@ def voice_changer(uploaded_file, column1, column2):
 
     voice = column1.radio('Voice', options=["Normal Voice","Deep Voice", "Smooth Voice"])
     
-    if voice == "Normal Voice":
+    if voice   == "Normal Voice":
         Num_of_steps = 0
 
-    if voice == "Deep Voice":
+    if voice   == "Deep Voice":
         Num_of_steps = -7
 
     elif voice == "Smooth Voice":
         Num_of_steps = 7
 
     signal, sample_rate = librosa.load(uploaded_file, sr=None)
-    modified_signal =librosa.effects.pitch_shift(signal,sr=sample_rate,n_steps=Num_of_steps)
+    modified_signal     = librosa.effects.pitch_shift(signal, sr=sample_rate, n_steps=Num_of_steps)
     write("voice_changed.wav", sample_rate, modified_signal)
 
-    time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] )                           # read audio file
+    time =np.linspace(0,signal.shape[0]/sample_rate,signal.shape[0] ) # read audio file
     
     with column2:
         fig= plt.figure(figsize=[15,8])
@@ -62,13 +62,13 @@ def read_audio(audio_file):
     signal_x_axis = np.linspace(0, duration, len(signal_y_axis))
 
     return signal_x_axis, signal_y_axis, sample_rate
-    
+
 #-------------------------------------- FOURIER TRANSFORM ----------------------------------------------------
 def fourier_transform(signal_y_axis, sample_rate):
 
     y_fourier       = rfft(signal_y_axis)                                # returns complex numbers of the y axis in the data frame
     x_fourier       = rfftfreq(len(signal_y_axis), 1/sample_rate)        # returns the frequency x axis after fourier transform
-    points_per_freq = len(x_fourier) / (x_fourier[-1])                   # how many points in the y_fourier array from freq 0 to 1 
+    points_per_freq = len(x_fourier) / (x_fourier[-1])                   # how many points in the x_fourier array from freq 0 to 1 
     return y_fourier, points_per_freq
 
 #-------------------------------------- CREATE SLIDERS & MODIFY SIGNALS ----------------------------------------------------
@@ -106,7 +106,7 @@ def static_graph(column, x_axis, y_axis1, y_axis2 = None):
 
 #-------------------------------------- PLOTTING SPECTROGRAM ----------------------------------------------------
 def plot_spectro(original_audio, modified_audio):
-    
+
     y1, sr = librosa.load(original_audio)
     y2, sr = librosa.load(modified_audio)
     D1     = librosa.stft(y1)             # STFT of y
@@ -134,7 +134,7 @@ def plot_animation(df):
 
     # customizing the graph x axis, giving names and size of the plot
     chart1 = alt.Chart(df).mark_line().encode(x=alt.X('time', axis=alt.Axis(title='Time',labels=False)),).properties(width=414,height=200).add_selection(brush).interactive()
-    
+
     # customizing the graph y axis, giving titles and lables
     figure = chart1.encode(y=alt.Y('amplitude',axis=alt.Axis(title='Amplitude'))) | chart1.encode(y ='amplitude after processing').add_selection(brush)
     return figure
@@ -142,7 +142,7 @@ def plot_animation(df):
 def Dynamic_graph(signal_x_axis, signal_y_axis, signal_y_axis1,sample_rate):
 
         step_plot= int(sample_rate/210)
-        
+
         # creating the data frame to to work with altair library
         df = pd.DataFrame({'time': signal_x_axis[::step_plot], 'amplitude': signal_y_axis[:: step_plot], 'amplitude after processing': signal_y_axis1[::step_plot]}, columns=['time', 'amplitude','amplitude after processing'])
 
