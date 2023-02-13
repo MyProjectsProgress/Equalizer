@@ -88,6 +88,11 @@ https://user-images.githubusercontent.com/93640020/202783083-b9483b4c-6421-4743-
 
 https://user-images.githubusercontent.com/93640020/202783473-3d7d91f6-1122-420e-b838-a4398048fb7b.mp4
 
+- Course Name : Digital Signal Processing .
 
+## Submitted to:
 
+- Dr. Tamer Basha & Eng. Abdullah Darwish
+
+All rights reserved © 2022 to Team 7 - Systems & Biomedical Engineering, Cairo University (Class 2024)
  
